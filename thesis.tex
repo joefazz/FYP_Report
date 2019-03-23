@@ -1,0 +1,91 @@
+\documentclass[12pt, a4paper]{extreport}
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage[toc]{appendix} % use [page] to include appendix title page
+
+\title{Using Containers to Isolate Remote Code Execution for an Online Development Environment}
+\author{
+    Joseph Fazzino\\
+    24026478\\
+    [4cm]{Supervisor: Dr. Hong Wei}
+}
+\date{29\textsuperscript{th} April 2019}
+
+
+\begin{document}
+
+% --------------------------------------------------
+% Title Page
+% --------------------------------------------------
+INSERT IMAGE HERE
+
+Department of Computer Science Individual Project - CS3IP16
+
+\maketitle
+
+% --------------------------------------------------
+% Preamble
+% --------------------------------------------------
+\input{tex/abstract.tex}
+
+\input{tex/acknowledgements.tex}
+
+% --------------------------------------------------
+% Table of Contents & Glossary
+% --------------------------------------------------
+\tableofcontents
+\pagebreak
+
+\input{tex/glossary.tex}
+
+
+% --------------------------------------------------
+% Thesis
+% --------------------------------------------------
+\input{tex/introduction.tex}
+
+\input{tex/problem_definition.tex}
+
+\input{tex/literature_review.tex}
+
+\input{tex/method.tex}
+
+\input{tex/implementation.tex}
+
+\input{tex/testing.tex}
+
+
+
+% --------------------------------------------------
+% Discussion and Reflection ???
+% --------------------------------------------------
+\chapter{Discussion: Contribution and Reflection}
+\pagebreak
+
+
+% --------------------------------------------------
+% ???
+% --------------------------------------------------
+\chapter{Social, Legal, Health and Safety and Ethical Issues}
+\pagebreak
+
+
+% --------------------------------------------------
+% Conclusion
+% --------------------------------------------------
+\chapter{Conclusion and Future Improvements}
+\pagebreak
+
+
+% --------------------------------------------------
+% Bibliography & Appendices
+% --------------------------------------------------
+\bibliographystyle{plain}
+\bibliography{references}
+\pagebreak
+
+\input{tex/appendices.tex}
+
+
+\end{document}
