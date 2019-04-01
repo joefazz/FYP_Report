@@ -1,8 +1,20 @@
 \documentclass[12pt, a4paper]{extreport}
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{graphicx}
+\usepackage{titlesec, color, blindtext}
+\usepackage[
+    style=ieee
+]{biblatex}
 \usepackage[toc]{appendix} % use [page] to include appendix title page
+
+\addbibresource{references.bib}
+\setlength{\parindent}{4em}
+\setlength{\parskip}{1em}
+\definecolor{gray75}{gray}{0.75}
+\newcommand{\hsp}{\hspace{10pt}}
+\titleformat{\chapter}[display]{\Huge\bfseries}{Chapter \thechapter}{0.3em}{\LARGE\bfseries}
+\titlespacing*{\chapter}{0cm}{-\topskip}{0pt}[0pt]
+\titlespacing*{\section}{0cm}{0cm}{0pt}[0pt]
 
 \title{Using Containers to Isolate Remote Code Execution for an Online Development Environment}
 \author{
@@ -15,29 +27,27 @@
 
 \begin{document}
 
-% --------------------------------------------------
-% Title Page
-% --------------------------------------------------
-INSERT IMAGE HERE
-
-Department of Computer Science Individual Project - CS3IP16
-
 \maketitle
 
+\tableofcontents
 % --------------------------------------------------
 % Preamble
 % --------------------------------------------------
+\pagebreak
+
 \input{tex/abstract.tex}
+
+\pagebreak
 
 \input{tex/acknowledgements.tex}
 
-% --------------------------------------------------
-% Table of Contents & Glossary
-% --------------------------------------------------
-\tableofcontents
 \pagebreak
 
 \input{tex/glossary.tex}
+% --------------------------------------------------
+% Table of Contents & Glossary
+% --------------------------------------------------
+
 
 
 % --------------------------------------------------
@@ -81,11 +91,12 @@ Department of Computer Science Individual Project - CS3IP16
 % --------------------------------------------------
 % Bibliography & Appendices
 % --------------------------------------------------
-\bibliographystyle{plain}
-\bibliography{references}
+\printbibliography
 \pagebreak
 
-\input{tex/appendices.tex}
+
+
+% \input{tex/appendices.tex}
 
 
 \end{document}

@@ -1,5 +1,88 @@
 % --------------------------------------------------
 % Problem Definition / Technical Specification
 % --------------------------------------------------
-\chapter{Problem Articulation and Technical Specification}
-\pagebreak
+\chapter{Problem Articulation\\ \& Technical Specification}
+% Here you must provide a detailed description of the problem being addressed. 
+% This should include a problem statement and description of the context/environment of the problem 
+% along with the key stakeholders and their concerns. The problem statement should be succinct 
+% and should establish the criteria  by  which  the  problem  would  be  validated  and  accepted  
+% as  being  adequately  solved  (i.e. acceptance requirements). 
+% A technical specification may be developed against which a range of possible solutions, 
+% including the one you implement, can be considered later in your report. 
+% Again the PID content should help you when composing this section. You would include an 
+% analysis of the situation-as-is. In some cases this may be very simple. 
+% In others with socio-technical system contexts it could be complex and require system / architecture  / environment representations 
+% (e.g. in algorithms, mathematical models, UML models, XML, ArchiMate models or other means 
+% suitable to your domain). You would also include a vision of the situation-to-be where  the  
+% problem  is  adequately  solved.  Again  this  might  require  complex  representations.  
+% The situation-to-be and its representation should help you when composing the Discussion section.
+\section{Context}
+As computers have become more pervasive, coding has become a skill that has graduated past being something that only people who work in laboratories need to concern themselves with, to a skill that has become highly desirable commercially and is starting to be taught in the regular curriculum to children studying at a primary level education\cite{schools}. This new demand for beginner friendly coding tools lends itself nicely to the promise of an online based environment where people can get started with basic coding concepts without having to trawl through documentation and technical detail about how to get running with one of the popular languages/tools available. This has led to an explosion of popularity for web applications such as \texttt{codecademy.com} which offer pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open and free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
+
+\section{Problem Statement}
+A common pattern with the current platforms that exist is that they provide a strict sandbox within the confines of a predetermined configuration that the user selects, for example, in \texttt{codecademy} and \texttt{repl.it} you're stuck in the environment you pick when you start desired tool. An argument can be made that this makes a new developers life easier as they don't have to consider the more nuanced parts of the file system or learn any sort of terminal commands. However, it seems as though there would be value in a system that can provide both the ease of use that current existing solutions offer and also the freedom to explore a full environment with an array of tools preconfigured that encourage exploration without compromising the security and integrity of the underlying system.
+
+\section{Technical Specification}
+The objectives of this project are: 
+\begin{enumerate}
+    \item Create a platform where users can write/execute code
+    \item Give every user their own personal environment
+    \item Eliminate the need for locally installed tooling
+    \item Provide a system that encourages exploration into the world of development
+\end{enumerate}
+
+\subsection{Writing and Executing Code}
+\textbf{Functional Requirements}
+\begin{itemize}
+    \item Code will be able to be typed using the platform
+    \item Code will be able to be saved
+    \item Code will be able to be read from the platform
+    \item Code will be able to be executed
+\end{itemize}
+\textbf{Non-Functional Requirements}
+\begin{itemize}
+    \item A good variety of languages will be supported
+    \item The basic features of a code editor will be available (i.e. syntax highlighting)
+    \item Code that is executing will not stall the platform
+\end{itemize}
+
+\subsection{Personal Environments}
+\textbf{Functional Requirements}
+\begin{itemize}
+    \item A personal environment will be allocated to every user
+\end{itemize}
+\textbf{Non-Functional Requirements}
+\begin{itemize}
+    \item The personal environments will be isolated from the rest of the system
+    \item The personal environments will be isolated from each other
+    \item The personal environments will perform well and be responsive to user input
+    \item If a personal environment fails then it will be restarted
+\end{itemize}
+
+\subsection{Local Tooling Replacement}
+\textbf{Functional Requirements}
+\begin{itemize}
+    \item High quality tools will be available to the user
+    \item Industry standard tools will be available to the user
+    \item The system will eliminate the need for local tooling
+\end{itemize}
+\textbf{Non-Functional Requirements}
+\begin{itemize}
+    \item Popular tools will be researched and considered before being added to the system
+    \item Tools will be standardised across the system
+    \item Tools will be customisable to the users needs
+    \item Tools will behave in a responsive manner
+\end{itemize}
+
+\subsection{Encourage Exploration into Development}
+\textbf{Functional Requirements}
+\begin{itemize}
+    \item Implement exercises for users to do
+    \item Allow creation of exercises by users
+\end{itemize}
+\textbf{Non-Functional Requirements}
+\begin{itemize}
+    \item Allow any exercise to be shared
+    \item Assign difficulty level to exercises
+    \item Provide an open area for the user to explore their personal environment
+\end{itemize}
