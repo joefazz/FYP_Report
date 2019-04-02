@@ -16,14 +16,18 @@
 % suitable to your domain). You would also include a vision of the situation-to-be where  the  
 % problem  is  adequately  solved.  Again  this  might  require  complex  representations.  
 % The situation-to-be and its representation should help you when composing the Discussion section.
-\section{Context}
+\section{Context} \label{section:context}
 As computers have become more pervasive, coding has become a skill that has graduated past being something that only people who work in laboratories need to concern themselves with, to a skill that has become highly desirable commercially and is starting to be taught in the regular curriculum to children studying at a primary level education\cite{schools}. This new demand for beginner friendly coding tools lends itself nicely to the promise of an online based environment where people can get started with basic coding concepts without having to trawl through documentation and technical detail about how to get running with one of the popular languages/tools available. This has led to an explosion of popularity for web applications such as \texttt{codecademy.com} which offer pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open and free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
 
-\section{Problem Statement}
+\section{Problem Statement} \label{section:probstate}
 A common pattern with the current platforms that exist is that they provide a strict sandbox within the confines of a predetermined configuration that the user selects, for example, in \texttt{codecademy} and \texttt{repl.it} you're stuck in the environment you pick when you start desired tool. An argument can be made that this makes a new developers life easier as they don't have to consider the more nuanced parts of the file system or learn any sort of terminal commands. However, it seems as though there would be value in a system that can provide both the ease of use that current existing solutions offer and also the freedom to explore a full environment with an array of tools preconfigured that encourage exploration without compromising the security and integrity of the underlying system.
 
-\section{Technical Specification}
-The objectives of this project are: 
+\section{Technical Specification} \label{section:techspec}
+Based on the problem statement the potential scope for the project is very broad, there are companies and teams of developers that have the sole goal of making sure their online environments are providing users with as smooth an experience as they would expect if they had installed the tools locally.
+
+This project will focus on the essential functionality required to behave as an online development environment while supporting a good variety of languages and offering a space which encourages exploration into different coding concepts.
+
+With the above in mind the enumerated objectives of this project are: 
 \begin{enumerate}
     \item Create a platform where users can write/execute code
     \item Give every user their own personal environment
@@ -32,14 +36,16 @@ The objectives of this project are:
 \end{enumerate}
 
 \subsection{Writing and Executing Code}
-\textbf{Functional Requirements}
+As an essential requirement for the development experience, the ability to edit and execute code is crucial to satisfy the overarching objective of creating an online environment. The execution of code presents a significant technical challenge however as the only code execution that can be done remotely is on a web browser which must be able to execute HTML, CSS and JavaScript. Mobile applications developed for iOS and Android are not capable of executing code.
+
+\subsubsection{Functional Requirements}
 \begin{itemize}
     \item Code will be able to be typed using the platform
     \item Code will be able to be saved
     \item Code will be able to be read from the platform
     \item Code will be able to be executed
 \end{itemize}
-\textbf{Non-Functional Requirements}
+\subsubsection{Non-Functional Requirements}
 \begin{itemize}
     \item A good variety of languages will be supported
     \item The basic features of a code editor will be available (i.e. syntax highlighting)
@@ -47,11 +53,13 @@ The objectives of this project are:
 \end{itemize}
 
 \subsection{Personal Environments}
-\textbf{Functional Requirements}
+The need for the space that the user occupies to feel personal is a vital element to local development environment and therefore must be well implemented for an online equivalent.
+
+\subsubsection{Functional Requirements}
 \begin{itemize}
     \item A personal environment will be allocated to every user
 \end{itemize}
-\textbf{Non-Functional Requirements}
+\subsubsection{Non-Functional Requirements}
 \begin{itemize}
     \item The personal environments will be isolated from the rest of the system
     \item The personal environments will be isolated from each other
@@ -60,13 +68,15 @@ The objectives of this project are:
 \end{itemize}
 
 \subsection{Local Tooling Replacement}
-\textbf{Functional Requirements}
+Tooling has been through some big changes both in web browsers and locally. Web browsers have got to the point where they are so powerful that some of the most popular desktop software is being powered by them\cite{carlo}. It is important to provide tools that will help those new to development, while also offering experience in tools that are of a high quality.
+
+\subsubsection{Functional Requirements}
 \begin{itemize}
     \item High quality tools will be available to the user
     \item Industry standard tools will be available to the user
     \item The system will eliminate the need for local tooling
 \end{itemize}
-\textbf{Non-Functional Requirements}
+\subsubsection{Non-Functional Requirements}
 \begin{itemize}
     \item Popular tools will be researched and considered before being added to the system
     \item Tools will be standardised across the system
@@ -75,14 +85,59 @@ The objectives of this project are:
 \end{itemize}
 
 \subsection{Encourage Exploration into Development}
-\textbf{Functional Requirements}
+Lowering the barrier to entry through the requirements stated above will inherently make it easier to explore development but more steps can be taken in order to engage users with the system such as allowing them to create short coding exercises that can be shared with friends or on social media.
+
+\subsubsection{Functional Requirements}
 \begin{itemize}
     \item Implement exercises for users to do
     \item Allow creation of exercises by users
 \end{itemize}
-\textbf{Non-Functional Requirements}
+\subsubsection{Non-Functional Requirements}
 \begin{itemize}
     \item Allow any exercise to be shared
     \item Assign difficulty level to exercises
     \item Provide an open area for the user to explore their personal environment
+\end{itemize}
+
+\section{Stakeholders} \label{section:stake}
+This project has a number of relevant stakeholders with various degrees of interest in the outcomes. All of them will be considered during the construction of the system.
+
+\subsubsection{The Developer - Joseph Fazzino}
+The developer of the system is responsible for making 100\% of the the technical decisions and is responsible for delivering a fully functioning system adhering to the technical specification found in  Section \ref{section:techspec} of this report.
+
+\subsubsection{Project Supervisor - Dr. Hong Wei}
+The supervisor of this project is overseeing the development and design process that is being undertaken. 
+
+They provide guidance when it comes to essential functionality and ways that technical requirements can be implemented.
+
+\subsubsection{User - Beginner Level Developer}
+Those new to development will not have experience with the terminology and syntax that exists in programming and wider computer science. They may have an understanding of basic coding concepts taught to them during formal education.
+
+The beginner user should be able to use the system in order to become more familiar with generic programming concepts. The exercises available through the system will likely be the area they spend the most time.
+
+\subsubsection{User - Intermediate Level Developer}
+A user more familiar with the general work flow of a developer will be able to understand certain levels of nuance of how a system might be implemented and consider how they may solve certain problems.
+
+This kind of user would benefit more from the ability to have a playground to explore the system in so they can understand the functionality that it provides and maybe try to explore the extent to which it works.
+
+\subsubsection{User - Experienced Level Developer}
+This user will have successfully developed systems with a high level of complexity and will most likely have specialised knowledge in a certain domain/environment.
+
+This type of developer will be difficult to convince the benefits of an online working environment when they undoubtedly have a solution that works well for them locally.
+
+\section{Constraints} \label{section:constraints}
+Some constraints on the development of the project exist.
+
+\begin{itemize}
+    \item Permanent deployment - as the system is likely to be complex, deploying it will be costly and time consuming. Test deployment will be done to experiment with configuration settings in the system but a permanent live deployment will not be.
+    \item Computer resource availability - the system will be constrained performance wise by the resources available during development meaning that any stress tests are not representative of a deployed system
+    \item Significant testing base - as the system will not be deployed it will be difficult to adequately test the system in the manner which it would be used by end user. A different method of testing will have to be explored.
+\end{itemize}
+
+\section{Assumptions} \label{section:constraints}
+A number of assumptions must be made to reasonably meet the technical requirements.
+
+\begin{itemize}
+    \item The users will have a reliable internet connection
+    \item The users will have the necessary software/hardware configuration in order to access the system (e.g. a modern web browser)
 \end{itemize}
