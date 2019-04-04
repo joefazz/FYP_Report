@@ -8,6 +8,7 @@
 
 This chapter focuses on an analysis of existing systems in the online development space and the literature that provides context to the decisions that were made during development. It looks at the advancement of the web browser and discusses the functionality provided which can lead to this type of project to be developed. It also looks at the current state of the art of virtualization as it relates to personalised environments and how the advent of Containers has fundamentally changed the way users interact with virtual environments, as illustrated by supporting literature.
 
+%TODO: This might be a waste of space?
 \section{The Web Browser} \label{lit-web}
 
 The web browser has been through a myriad of changes since it's birth in the early 1990s. An excellent article titled "Mosaic and the World-Wide-Web"\cite{mosaic} illustrates the problems that were prominent in the early stages of the industry such as the lack of a search engine leading to difficulty in finding resources. It also illustrates what were considered leaps in progress at the time such as Mosaic being the first browser to support in-line multimedia and to have a 'back' and 'forward' button.
@@ -21,6 +22,8 @@ An experiment was done in 2012 discussing the performance of different RTC metho
 \textbf{HTTP polling} is an attempt to solve the real-time issue however it is still built on top of a system not designed for real-time, full duplex communication. \textbf{HTTP long-polling} is another solution that sticks to the HTTP protocol but reduces the number of wasteful requests by having the server intelligently not respond to the request if there is no information available and hang until a timeout or information becomes available.
 
 A modern solution to this is the \textbf{WebSocket} protocol proposed in RFC 6455 \cite{wsrfc} which aims to reduce latency by a factor of 3 compared to HTTP in the real-time communication aspect. It is a fully duplexed, bidirectional communication channel that uses physical sockets to connect machines.
+
+%TODO: Illustration of WebSocket vs HTTP
 
 \section{Online Developer Environments} \label{lit-ode}
 
@@ -60,9 +63,21 @@ In terms of UX the website is a very colourful friendly interface. A feature whi
 
 \section{Virtualisation and Containerisation} \label{lit-containers}
 
+\subsection{Virtualisation}
+
 Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
 
 In the enterprise world, virtualisation techniques are being used to host their customers applications in a full PaaS solution so customers no longer have to worry about hosting their own web servers or other online services.
+
+The general way of interacting with fully virtualised environments is through a hypervisor which is a tool which can provision and monitor virtual machines \cite{hypervisor}.
+
+%TODO: Discuss hypervisors in more depth
+
+\subsection{Containerisation}
+
+%TODO: Describe surface level detail of Containerisation
+Containerisation is a 
+
 
 https://ieeexplore.ieee.org/abstract/document/6903537
 
