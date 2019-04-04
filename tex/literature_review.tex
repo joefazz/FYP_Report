@@ -27,20 +27,42 @@ A modern solution to this is the \textbf{WebSocket} protocol proposed in RFC 645
 A number of existing solutions providing online development environments exist and have been analysed for the purpose of this review.
 
 \subsection{Repl.it}
+
 Repl.it is very similar to the idea proposed in the Problem Statement (Section \ref{section:probart-probstate}) and a lot of the requirements lined out in Section \ref{section:probart-techspec}. It offers a huge array of Repl templates available for users to get started with many languages/frameworks very quickly. It also uses the Monaco Editor provided by Microsoft in order to provide a first class text editor experience.
 
 Repl.it takes advantage of containerisation in order to gives users the full developer experience when visiting the system \cite{replit-containers}. The system also uses it's own container orchestration software in order to scale the instances available to users up and down depending on demand.
 
-For long running processes such as a web server. Repl.it will host the process on a subdomain of the repl.it domain which is accessible at any time.
+Every code result that is available to be viewed/run is viewable through a special .repl.run subdomain. This includes long running processes like web servers which are able to be hosted from these subdomains and be always accessible. This means you could create several repls which all connect to each other like a full system.
+
+Technically the system is very impressive, something that the system doesn't recreate quite as smoothly as a local environment would is a small amount of latency between a key being pressed and the corresponding value appearing in the REPL itself.
+
+The system also seems to remove all previously typed entries of the REPL on every press of the \textit{Run} button. This suggests that it is giving you a new REPL instance on every execution which isn't how a local environment works.
+
+From a HCI point of view the website feels very smooth to use and is not frustrating to use other than the latency noted when typing directly into the running container via the REPL.
+
+Repl.it is clearly very focused on the objective of replacing local development environments and does a good job of fulfilling that need.
 
 \subsection{Codecademy}
 Codecademy is a educational focused online environment designed to teach users how to code. Ranging in topics from beginning web development to a course to the IBM Watson API. It is a more directed experience than Repl.it as users are performing tasks for exercises but they are typing code into a similar environment, the code is executed and the result is displayed to the user.
 
+Codecademy does allow access directly to the REPL but if code is entered into the editor which allows for user input such as the \texttt{input()} function in Python. Then it interprets the input correctly.
 
+The Codecademy web application is clearly a very complicated system and it shows by how unresponsive it feels when navigating from page to page. The page does a full refresh even though there are elements which do not change on the screen page to page. This leads to a frustrating wait looking a blank screen between page loads.
+
+It is clear that Codecademy is a focused environment to encourage new developers to get into development by offering an easy to start environment and heavily directed experience. It is not concerned with the idea of replacing local development environments so much as making sure that it's not something beginners should need to think of when wanted to get to know a new tool.
 
 \subsection{Glitch}
+Glitch is a web application that is focused on trying to cultivate a social coding community that encourages developers to help each other out and build mini applications with JavaScript and Node.js. It provides an online coding environment that uses containers to isolate the users runtime.
 
-\section{Containerisation and Virtualisation} \label{lit-containers}
+Glitch is clearly focused heavily on the social aspect as on the homepage they have a section dedicated to users asking for help so more experienced coders can help them achieve their goals with the applications they want to build. It also showcases user made projects on the homepage which can be \textit{Remixed} which is similar to forking a repository on GitHub for other users to modify.
+
+In terms of UX the website is a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage in \%, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions to projects that are run in Glitch. 
+
+\section{Virtualisation and Containerisation} \label{lit-containers}
+
+Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
+
+In the enterprise world, virtualisation techniques are being used to host their customers applications in a full PaaS solution so customers no longer have to worry about hosting their own web servers or other online services.
 
 https://ieeexplore.ieee.org/abstract/document/6903537
 

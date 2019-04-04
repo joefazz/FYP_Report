@@ -1,7 +1,9 @@
 \documentclass[12pt, a4paper]{extreport}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
 \usepackage{titlesec, color, blindtext}
+\usepackage{titling}
 \usepackage[
     style=ieee
 ]{biblatex}
@@ -16,6 +18,17 @@
 \titlespacing*{\chapter}{0cm}{-\topskip}{0pt}[0pt]
 \titlespacing*{\section}{0cm}{0cm}{0pt}[0pt]
 
+% \pretitle{
+%     \begin{center}
+%         \includegraphics[width=\textwidth]{res/universe.jpg}
+% 		Department of Computer Science \vspace{0.2cm}
+		
+% 		Individual Project - CS3IP16
+		
+% 		\vspace{6cm}
+% 		\fontsize{18bp}{18bp}\selectfont
+% 	}
+% \posttitle{\end{center}}
 \title{Using Containers to Isolate Remote Code Execution for an Online Development Environment}
 \author{
     Joseph Fazzino\\
