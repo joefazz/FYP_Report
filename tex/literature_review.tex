@@ -59,25 +59,32 @@ Glitch is a web application that is focused on trying to cultivate a social codi
 
 Glitch is clearly focused heavily on the social aspect as on the homepage they have a section dedicated to users asking for help so more experienced coders can help them achieve their goals with the applications they want to build. It also showcases user made projects on the homepage which can be \textit{Remixed} which is similar to forking a repository on GitHub for other users to modify.
 
-In terms of UX the website is a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage in \%, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions to projects that are run in Glitch. 
+In terms of design, the website has a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage in \%, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions to projects that are run in Glitch. 
 
-\section{Virtualisation and Containerisation} \label{lit-containers}
 
-\subsection{Virtualisation}
+%TODO: Finish section
+\section{Virtual Machines and Containers} \label{lit-containers}
 
-Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
+\subsection{Virtual Machines}
 
-In the enterprise world, virtualisation techniques are being used to host their customers applications in a full PaaS solution so customers no longer have to worry about hosting their own web servers or other online services.
+Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} \textit{(VM)} software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
 
-The general way of interacting with fully virtualised environments is through a hypervisor which is a tool which can provision and monitor virtual machines \cite{hypervisor}.
+In the enterprise world, Virtual Machines are being used to host their customers applications in a full PaaS solution so customers no longer have to worry about hosting their own web servers or other online services.
 
-%TODO: Discuss hypervisors in more depth
+The general way of interacting with fully virtualised environments is through a hypervisor which is a tool that is responsible for provisioning and monitoring Virtual Machines \cite{hypervisor}. The hypervisor allocates resources such as memory and CPU cores from the host machine that the VM is allowed to consume. When the VM is shut down these resources are freed and can be used by the host system once again. The hypervisor also allows the VM to use a different base operating system than the one that is on the host machine as it provides a whole \textit{Guest OS}.
 
-\subsection{Containerisation}
+\subsection{Containers}
 
-%TODO: Describe surface level detail of Containerisation
-Containerisation is a 
+Containers are a much lighter virtualisation method than  Virtual Machines despite the functionality being similar. They achieve this as they are much closer to the systems 'bare metal' as any commands that are executed through a container are running on the host's hardware. This means that there is no need for a hypervisor as containers have direct access to the resources. Usage limits can be set in the configuration of container \textit{images} which will be discussed further during this subsection.
 
+As Containers traditionally don't utilise a hypervisor the biggest difference between them is that the engine that powers the container provisioning software such as the \textit{Docker Engine} isn't able to virtualise an environment based on a different OS. This is more by design however as it is what gives containers their 'light weight' quality as they aren't having to simulate a whole kernel.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.4]{res/Virtualisation.png}
+    \caption{Architecture of Virtual Machines vs. Containers}
+    \label{fig:architecture}
+\end{figure}
 
 https://ieeexplore.ieee.org/abstract/document/6903537
 
