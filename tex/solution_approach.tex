@@ -9,43 +9,11 @@ In order to provide users with the most 'local' experience as possible on a remo
 
 There are many different container solutions available currently, many have similar roots such as a backbone of using LXC but they build on top of those foundations in varying ways. Some of these ways are documented in the paper which was discussed in Section \ref{lit-containers} \cite{contsvsvirt}. This paper performed a comparison of the various different container technologies and stacked them against each other on key implementation features such as performance and security. 
 
-The decision to not research Virtual Machines as a potential solution for the system is due to the project not requiring the utility of a hypervisor and therefore does not require the ability to run a different Operating System on top of Linux. As almost all developer tools are freely available through most Linux distributions. This means that there are few to no downsides of using a container based solution versus a fully blown Virtual Machine set up and many benefits.
+The decision to not research Virtual Machines as a potential solution for the system is due to the project not requiring the utility of a hypervisor. As almost all developer tools are freely available through most Linux distributions. This means that there are few to no downsides of using a container based solution versus a fully blown Virtual Machine set up and many benefits.
 
 \subsection{Container Providers}
 
-\subsubsection{Linux Containers}
-
-As briefly mentioned above, \textbf{Linux Containers} or \textbf{LXC} are the foundation of many container solutions. This is due to the fact that they offer a light kernel implementation which provides every container with some key features.
-
-\begin{itemize}
-    \item A unique Process ID for each container
-    \item Isolates all resources for the container by using cgroups and namespaces
-    \item Provides each container with it's own private IP address
-    \item Isolates all files on the container from the Host by using chroot
-\end{itemize}
-
-In terms of downsides the LXC implementation is heavily tied to the Linux OS which means that it is not possible to run it on a different OS such as Windows. There are also some security concerns for LXC as all the containers share the one Host kernel.
-
-\subsubsection{OpenVZ Containers}
-
-OpenVZ makes use of a modified Linux kernel with it's own set of extensions. OpenVZ is able to manage physical and virtual servers with \textit{dynamic real-time partitioning}. It similarly offers better performance than a traditional hypervisor based system and utilising the cgroups and namespaces features of Linux to provide it's virtual environments.
-
-On top of the advantages of LXC it also provides the following benefits.
-
-\begin{itemize}
-    \item \textbf{Container Lifecycle} remote management can be done of containers using an API to modify the status of a container in real-time. 
-    \item \textbf{Container State} is able to create checkpoints during the container's lifecycle so that it may be recovered from that point should anything go wrong.
-\end{itemize}
-
 A big limitation of OpenVZ is that it can't run on the standard Linux kernel so it is not a very viable solution for this project as the aim to to deploy the system and requiring a modified kernel will add complexity.
-
-\subsubsection{Docker}
-
-The Docker process is a daemon which can provide and manage Linux Containers as \textit{images}. It uses LXC for the container implementation and then adds on top an image management system and a \textit{Union File System}.
-
-Using the daemon, Docker manages to provide similar functionality as the OpenVZ containers in relation to lifecycle and state. The state of a container at any time can be saved to a new image which can then be reloaded by the daemon to that same point
-
-Unlike OpenVZ, Docker can be run with the standard Linux kernel and therefore is more suited for PaaS software. It also has a thriving ecosystem of pre-made images which offer a huge array of different starting points and tools.
 
 \subsection{Virtualisation Conclusion}
 
@@ -122,9 +90,7 @@ For online emulation of a terminal/command line the most popular solution is \te
 
 With the solutions established above it is now appropriate to evaluate the options when it comes to how to build the whole user facing side of the system.
 
-As the developer has the most experience building websites using the \texttt{React.js} library (https://reactjs.org/) to help with creating reactive, data driven, single page web applications, that is the overarching technology that will be used to build the solution. 
-
-The need for a library such as React comes from the difficulty involved with maintaining data synchronisation between what is displayed on the screen and variables that exist in the JavaScript code. React also offers a high amount of code reuse with its component architecture. 
+As the developer has the most experience building websites using the \texttt{React} library (https://reactjs.org/) to help with creating reactive, data driven, single page web applications, that is the overarching technology that will be used to build the solution. 
 
 Within the React ecosystem however, there is a number of options about how to manage certain essential features such as page routing and how to style components in a way that fits into the React methodology.
 
@@ -132,7 +98,7 @@ Within the React ecosystem however, there is a number of options about how to ma
 
 In order to get started with React the recommended way is to use a package called \texttt{create-react-app} however a limitation of this method is that it is not configurable to the extent that is required by the Monaco code editor if syntax colouring is considered a key feature, which it is.
 
-It is neccessary then to evaluate some other options for getting started with a React application that allows for the configuration options that means syntax colouring works.
+It is necessary then to evaluate some other options for getting started with a React application that allows for the configuration options that means syntax colouring works.
 
 The popular options in the community are: ejecting a CRA project, Next.js or Razzle. 
 
@@ -162,6 +128,51 @@ Despite similar configuration extensibility as Next.js trying to enable syntax c
 \subsection{Conclusion on Frontend Framework}
 
 As syntax colouring has been described as a key feature there isn't much of a choice beyond choosing to use either Next.js or the Ejected CRA. As Next.js has a number of other benefits however, this makes it the most attractive and powerful option for building the frontend.
+
+\section{Design Prototypes}
+
+Trying to build a system that provides users with an environment where they feel as though there's not a high barrier to entry involves a design process which has to ensure that things are arranged in as friendly a way as possible.
+
+Some sketches were done in order to try to narrow down what kind of design language should be used to give the users a sense of friendless versus the more stark, professional look that some developer focused websites aim for \texttt{StackOverflow dot com}. Based on these general requirements the following low fidelity prototypes were created presenting different ways that information could be displayed for users.
+
+\begin{figure}[!htb]
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{res/lofi-prototype-1.jpg}
+  \caption{Prototype 1}\label{fig:lofi-prototype-1}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{res/lofi-prototype-2.jpg}
+  \caption{Prototype 2}\label{fig:lofi-prototype-2}
+\endminipage\hfill
+\minipage{0.32\textwidth}
+  \includegraphics[width=\linewidth]{res/lofi-prototype-3.jpg}
+  \caption{Prototype 3}\label{fig:lofi-prototype-3}
+\endminipage
+\end{figure}
+
+\subsection{Prototype One}
+
+Prototype design one uses small blocks of informative text which orbit around a circular shape in the middle. Not having significantly large blocks of text means the user won't be intimidated by the information being displayed to them. 
+
+The circle is a technique that designers use in order to draw the viewers attention to a specific area. Although it is not shown in the prototype image the font styles that are in use are: one serif font for the display text (the titles and headings) and one sans serif font for the body text (bulk of text).
+
+Some navigation elements can be seen along the top representing different sections of the site.
+
+\subsection{Prototype Two}
+
+Design two uses circles in the same way that prototype one does in order to draw users attention however it also uses interesting borders and shape cut offs to make the website stand out against most websites which stick with the default rectangular shape of most UI elements.
+
+This prototype contains a lot of textual information and might be more relevant for a page that needs to convey a message to the reader that requires significant blocks of text. This design wouldn't be appropriate for a landing page but maybe would for a page on an exercise the user can do.
+
+The font styles in use are a \texttt{monospaced} font for the display text and a sans serif font for body text.
+
+\subsection{Prototype Three}
+
+The third design is a concept for a profile screen but could be applied to a page that represents a particular language and technology. It has lots of space for informative textual content as well as some space for image assets/other resources that might convey information in a less traditional method.
+
+It attempts to use more shapes in order to draw attention to certain areas of the page although it does give the page a slightly skewed look on the right hand side so perhaps if this design were to be implemented it may not render on the screen in a way that looks good.
+
+No specific font styles were decided upon for this prototype.
 
 \section{Overall declaration of solution chosen}
 

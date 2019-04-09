@@ -6,7 +6,9 @@
 
 \chapter{Literature Review} \label{lit}
 
-This chapter examines various literature around relevant subjects to the project objectives stated in Section \ref{section:probart-techspec}. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-web})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It concludes by looking at some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}.
+%FIXME: this will need to be updated
+
+This chapter examines various literature around relevant subjects to the project objectives stated in Section \ref{section:probart-techspec}. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-rtc})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It concludes by looking at some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}.
 
 % %TODO: This might be a waste of space? - CONFIRMED
 % \section{The Web Browser} \label{lit-web}
@@ -94,5 +96,66 @@ As Containers traditionally don't utilise a hypervisor the biggest difference be
 \end{figure}
 
 Due to their performance benefits containers have become popular options for PaaS software. A paper was written comparing the benefits of a fully virtualised environment against a container based solution \cite{contsvsvirt}. It concluded that containers have an inherent advantage over VMs due to the performance benefits and the quick start up time of them. It also mentions that few PaaS vendors are using containers for their systems so far as they are too new of a technology. It is worth nothing that the report was published in 2014 however and since then uptake will have increased.
+
+\section{Container Providers}
+
+% TODO: Some spiel here about different container solutions
+
+\subsection{Linux Containers}
+
+As briefly mentioned above, \textbf{Linux Containers} or \textbf{LXC} are the foundation of many container solutions. This is due to the fact that they offer a light kernel implementation which provides every container with some key features.
+
+\begin{itemize}
+    \item A unique Process ID for each container
+    \item Isolates all resources for the container by using cgroups and namespaces
+    \item Provides each container with it's own private IP address
+    \item Isolates all files on the container from the Host by using chroot
+\end{itemize}
+
+In terms of downsides the LXC implementation is heavily tied to the Linux OS which means that it is not possible to run it on a different OS such as Windows. There are also some security concerns for LXC as all the containers share the one Host kernel.
+
+\subsection{OpenVZ Containers}
+
+OpenVZ makes use of a modified Linux kernel with it's own set of extensions. OpenVZ is able to manage physical and virtual servers with \textit{dynamic real-time partitioning}. It similarly offers better performance than a traditional hypervisor based system and utilising the cgroups and namespaces features of Linux to provide it's virtual environments.
+
+On top of the advantages of LXC it also provides the following benefits.
+
+\begin{itemize}
+    \item \textbf{Container Lifecycle} remote management can be done of containers using an API to modify the status of a container in real-time. 
+    \item \textbf{Container State} is able to create checkpoints during the container's lifecycle so that it may be recovered from that point should anything go wrong.
+\end{itemize}
+
+A big limitation of OpenVZ is that it can't run on the standard Linux kernel so it is not a very viable solution for this project as the aim to to deploy the system and requiring a modified kernel will add complexity.
+
+\subsection{Docker}
+
+The Docker process is a daemon which can provide and manage Linux Containers as \textit{images}. It uses LXC for the container implementation and then adds on top an image management system and a \textit{Union File System}.
+
+Using the daemon, Docker manages to provide similar functionality as the OpenVZ containers in relation to lifecycle and state. The state of a container at any time can be saved to a new image which can then be reloaded by the daemon to that same point
+
+Unlike OpenVZ, Docker can be run with the standard Linux kernel and therefore is more suited for PaaS software. It also has a thriving ecosystem of pre-made images which offer a huge array of different starting points and tools.
+
+% TODO: Finish this section
+\section{Frontend Web Technologies}
+
+The client side of web applications is based on three fundamental 
+
+Web development has changed a lot since its inception, new technology has been released that gives developer greater flexibility in how they build their modern web apps. Since the creation of jQuery \texttt{(https://jquery.com/)} a number of JavaScript based frameworks/libraries have come about that try to solve some of the problems that are inherent to the web platform.
+
+\subsection{React}
+
+React is developed by Facebook and attempts to simplify the process of creating interactive UIs by providing a declarative way of writing UI code and encouraging the reuse of \textit{components} which are composed HTML elements which have the option of providing interaction through JavaScript.
+
+The need for a library such as React comes from the difficulty involved with maintaining data synchronisation between what is displayed on the screen and variables that exist in the JavaScript code. React also offers a high amount of code reuse with its component architecture. 
+
+React has a very strong community with over 80,000 packages listed on the NPM package registry \texttt{(https://npmjs.com/search?q=react)}.
+
+\subsection{Vue.js}
+
+Vue.js is a JavaScript Framework that offers a lot of the same functionality as React but offers it in a way that is more akin to the traditional way that web development is done. Where React blends the 3 key technologies of the web into a JavaScript focus. Vue.js maintains a separation of these concepts.
+
+Vue.js offers more than React out of the box such as an official routing solution for single page applications, global state management and server side rendering.
+
+It has grown very quickly since it came out in 2014 and has just over 25,000 packages published on NPM \texttt{(https://npmjs.com/search?q=vue)}
 
 \pagebreak
