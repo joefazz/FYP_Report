@@ -6,22 +6,28 @@
 
 \chapter{Literature Review} \label{lit}
 
-This chapter focuses on an analysis of existing systems in the online development space and the literature that provides context to the decisions that were made during development. It looks at the advancement of the web browser and discusses the functionality provided which can lead to this type of project to be developed. It also looks at the current state of the art of virtualization as it relates to personalised environments and how the advent of Containers has fundamentally changed the way users interact with virtual environments, as illustrated by supporting literature.
+This chapter examines various literature around relevant subjects to the project objectives stated in Section \ref{section:probart-techspec}. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-web})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It concludes by looking at some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}.
 
-%TODO: This might be a waste of space?
-\section{The Web Browser} \label{lit-web}
+% %TODO: This might be a waste of space? - CONFIRMED
+% \section{The Web Browser} \label{lit-web}
 
-The web browser has been through a myriad of changes since it's birth in the early 1990s. An excellent article titled "Mosaic and the World-Wide-Web"\cite{mosaic} illustrates the problems that were prominent in the early stages of the industry such as the lack of a search engine leading to difficulty in finding resources. It also illustrates what were considered leaps in progress at the time such as Mosaic being the first browser to support in-line multimedia and to have a 'back' and 'forward' button.
+% The web browser has been through a myriad of changes since it's birth in the early 1990s. An excellent article titled "Mosaic and the World-Wide-Web"\cite{mosaic} illustrates the problems that were prominent in the early stages of the industry such as the lack of a search engine leading to difficulty in finding resources. It also illustrates what were considered leaps in progress at the time such as Mosaic being the first browser to support in-line multimedia and to have a 'back' and 'forward' button.
 
-Such concepts that were developed during the time are still very relevant, the general TCP/IP stack had been determined and the HTTP protocol was in use. An issue with HTTP is the protocol by design has latency embedded as it is designed for sending structured messages. For a project attempting to create an environment that mirrors a local set up online latency is a big hurdle and the need for it to be real-time is key. 
+% Such concepts that were developed during the time are still very relevant, the general TCP/IP stack had been determined and the HTTP protocol was in use. An issue with HTTP is the protocol by design has latency embedded as it is designed for sending structured messages. For a project attempting to create an environment that mirrors a local set up online latency is a big hurdle and the need for it to be real-time is key. 
 
-\section{Real-Time Communication} \label{lit-web}
+\section{Real-Time Communication} \label{lit-rtc}
 
-An experiment was done in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick\cite{websocket}.
+Real-Time Communication is an important research topic for this project as in order to create an environment for users that feels as close to a local experience as possible, the requirement for fast feedback is essential.
 
-\textbf{HTTP polling} is an attempt to solve the real-time issue however it is still built on top of a system not designed for real-time, full duplex communication. \textbf{HTTP long-polling} is another solution that sticks to the HTTP protocol but reduces the number of wasteful requests by having the server intelligently not respond to the request if there is no information available and hang until a timeout or information becomes available.
+An experiment was done in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick\cite{websocket}. This experiment compared the different standard HTTP methods of implementing Real-Time Communication compared to the new (at the time) technology of WebSockets which are designed to create a fully duplexed bidirectional data-flow.
 
-A modern solution to this is the \textbf{WebSocket} protocol proposed in RFC 6455 \cite{wsrfc} which aims to reduce latency by a factor of 3 compared to HTTP in the real-time communication aspect. It is a fully duplexed, bidirectional communication channel that uses physical sockets to connect machines.
+\textbf{HTTP polling} is an attempt to solve the real-time issue by repeatedly making a request to a web server at a pre determined time interval to check to see if there are any messages waiting to be read.  \textbf{HTTP long-polling} is another solution that sticks to the HTTP protocol but reduces the number of wasteful requests by having the server intelligently not respond to the request if there is no information available and hang until a timeout or information becomes available. Both of these solutions are inadaquate for a responsive system however because the HTTP protocol is still built on top of a system not designed for real-time, fully duplexed communication channel. HTTP relies on a standard 'Request-Response' model which is only half duplex so polling was only a solution that worked for systems that were reliably sending data at a steady rate such as sensors that are being queried for an API.
+
+A modern solution to this is the \textbf{WebSocket} protocol proposed in RFC 6455 \cite{wsrfc} which aims to reduce latency by a factor of 3 compared to HTTP in the real-time communication aspect. It is a fully duplexed, bidirectional communication channel that provides an efficient method of communicating between several different clients using a persistent connection between the client and the server. A client may connect to a websocket endpoint on the server, send messages to it, and the server may broadcast messages back to just that client or to every client connected. Due to this behaviour it is very popular for creating text based chat communication systems.
+
+WebSockets work by utilising a persistent TCP connection where messages can be sent back and forth without there having to be a new connection made every time. This behaviour is possible in HTTP since HTTP 1.1 however, WebSockets do not adhere to the standard, 'request, response' cycle that a HTTP request utilises. Any client connected to the socket is capable of broadcasting a message at any time. HTTP persistent connections also still suffer from latency due to the effort the protocol makes to control congestion \cite{httpvsws}. take the concept further by making it simple to embed data with each request through the form of a string in the form of a JSON schema. This makes it ideal for the transfer of small chunks of text where only text is the required form of the response. WebSockets are not appropriate for downloading resources or assets such as images.
+
+Another new approach of RTC on the web has been developed by Google in collaboration with other browser vendors called \textbf{WebRTC}. This technology is focused on streaming audio and video between different clients on the web. This new technology is aiming to be the replacement for the browser plugins that were necessary in order to use P2P video/voice chat software such as \textit{Skype, Facebook Messenger, Google Hangouts, etcetra} \cite{webrtc}. WebRTC is more appropriate for applications that need a streaming based connection as it's latency is even lower than WebSockets due to it utilising the UDP protocol which has much less overhead compared to the TCP based connection of WebSockets \cite{udpvstcp}. WebRTC would not be appropriate for the use case of WebSockets as when transferring informational data between clients, such as a chat application, it is important to make sure that the data is being received in the correct order whereas UDP is less concerned so long as enough packets get transferred to create a stable audio/video connection.
 
 %TODO: Illustration of WebSocket vs HTTP
 
@@ -33,7 +39,7 @@ A number of existing solutions providing online development environments exist a
 
 Repl.it is very similar to the idea proposed in the Problem Statement (Section \ref{section:probart-probstate}) and a lot of the requirements lined out in Section \ref{section:probart-techspec}. It offers a huge array of Repl templates available for users to get started with many languages/frameworks very quickly. It also uses the Monaco Editor provided by Microsoft in order to provide a first class text editor experience.
 
-Repl.it takes advantage of containerisation in order to gives users the full developer experience when visiting the system \cite{replit-containers}. The system also uses it's own container orchestration software in order to scale the instances available to users up and down depending on demand.
+Repl.it takes advantage of containeris in order to gives users a full developer experience when visiting the system \cite{replit-containers}. The system also uses it's own container orchestration software in order to scale the instances available to users up and down depending on demand.
 
 Every code result that is available to be viewed/run is viewable through a special .repl.run subdomain. This includes long running processes like web servers which are able to be hosted from these subdomains and be always accessible. This means you could create several repls which all connect to each other like a full system.
 
@@ -62,8 +68,9 @@ Glitch is clearly focused heavily on the social aspect as on the homepage they h
 In terms of design, the website has a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage in \%, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions to projects that are run in Glitch. 
 
 
-%TODO: Finish section
 \section{Virtual Machines and Containers} \label{lit-containers}
+
+In order to provide as close to local experience as possible to the users of the system this project aims to create. A virtual environment for executing code and saving files is vital. Virtualisation technology is changing significantly due to the different Container solutions which attempt to promote a more disposable and quick type of virtual environment compared to their hypervisor powered counterparts.
 
 \subsection{Virtual Machines}
 
@@ -77,7 +84,7 @@ The general way of interacting with fully virtualised environments is through a 
 
 Containers are a much lighter virtualisation method than  Virtual Machines despite the functionality being similar. They achieve this as they are much closer to the systems 'bare metal' as any commands that are executed through a container are running on the host's hardware. This means that there is no need for a hypervisor as containers have direct access to the resources. Usage limits can be set in the configuration of container \textit{images} which will be discussed further during this subsection.
 
-As Containers traditionally don't utilise a hypervisor the biggest difference between them is that the engine that powers the container provisioning software such as the \textit{Docker Engine} isn't able to virtualise an environment based on a different OS. This is more by design however as it is what gives containers their 'light weight' quality as they aren't having to simulate a whole kernel.
+As Containers traditionally don't utilise a hypervisor the biggest difference between them is that the engine that powers the container provisioning software such as the \textit{Docker Engine} isn't able to virtualise an environment based on a different OS. This is more by design however as it is what gives containers their 'light weight' quality as they aren't having to simulate a whole kernel. Not having a full kernel to set up however means that containers can start up significantly faster than a VM.
 
 \begin{figure}[h!]
     \centering
@@ -86,12 +93,6 @@ As Containers traditionally don't utilise a hypervisor the biggest difference be
     \label{fig:architecture}
 \end{figure}
 
-https://ieeexplore.ieee.org/abstract/document/6903537
-
-^^ Talking about containers vs VMs for PaaS software
-
-https://ieeexplore.ieee.org/abstract/document/7158965
-
-^^ More focused on Docker
+Due to their performance benefits containers have become popular options for PaaS software. A paper was written comparing the benefits of a fully virtualised environment against a container based solution \cite{contsvsvirt}. It concluded that containers have an inherent advantage over VMs due to the performance benefits and the quick start up time of them. It also mentions that few PaaS vendors are using containers for their systems so far as they are too new of a technology. It is worth nothing that the report was published in 2014 however and since then uptake will have increased.
 
 \pagebreak
