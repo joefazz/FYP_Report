@@ -4,18 +4,13 @@
 % The literature review is an essential component of your project report. You should discuss the existing literature that is relevant to your project with full and proper referencing. You should aim to refer to a range of material including academic papers, text books, articles and existing product descriptions. It should be clear to the reader why the literature you identify is relevant and how you have incorporated the learnings from your review into your project. For example, you may have made a number of project 
 % Page 4 of 5 decisions based on your review of the literature and these decisions should be described. The literature review should also lead to the creation of a number of possible solutions to your problem articulation and technical specification
 
+% FIXME: this whole section needs referencing
+
 \chapter{Literature Review} \label{lit}
 
 %FIXME: this will need to be updated
 
 This chapter examines various literature around relevant subjects to the project objectives stated in Section \ref{section:probart-techspec}. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-rtc})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It concludes by looking at some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}.
-
-% %TODO: This might be a waste of space? - CONFIRMED
-% \section{The Web Browser} \label{lit-web}
-
-% The web browser has been through a myriad of changes since it's birth in the early 1990s. An excellent article titled "Mosaic and the World-Wide-Web"\cite{mosaic} illustrates the problems that were prominent in the early stages of the industry such as the lack of a search engine leading to difficulty in finding resources. It also illustrates what were considered leaps in progress at the time such as Mosaic being the first browser to support in-line multimedia and to have a 'back' and 'forward' button.
-
-% Such concepts that were developed during the time are still very relevant, the general TCP/IP stack had been determined and the HTTP protocol was in use. An issue with HTTP is the protocol by design has latency embedded as it is designed for sending structured messages. For a project attempting to create an environment that mirrors a local set up online latency is a big hurdle and the need for it to be real-time is key. 
 
 \section{Real-Time Communication} \label{lit-rtc}
 
@@ -99,7 +94,7 @@ Due to their performance benefits containers have become popular options for Paa
 
 \section{Container Providers}
 
-% TODO: Some spiel here about different container solutions
+As containers are a more modern innovation than hypervisors, recently there has been a wave of different technologies that attempt to make simple containers in varying ways.
 
 \subsection{Linux Containers}
 
@@ -135,7 +130,7 @@ Using the daemon, Docker manages to provide similar functionality as the OpenVZ 
 
 Unlike OpenVZ, Docker can be run with the standard Linux kernel and therefore is more suited for PaaS software. It also has a thriving ecosystem of pre-made images which offer a huge array of different starting points and tools.
 
-% TODO: Finish this section
+
 \section{Frontend Web Technologies}
 
 The client side of web applications is based on three fundamental 

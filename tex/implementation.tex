@@ -2,4 +2,120 @@
 % Implementation
 % --------------------------------------------------
 \chapter{Implementation}
+
+% Here you describe the detailed design of your solution and the details of the actual implementation. It may be appropriate to discuss aspects of design or implementation that were particularly problematic and/or novel. This section may well be one of the largest in your report and the exact contents will be unique to your project and so there are no general guidelines. Use of several sub-sections here is appropriate.
+
+This chapter focuses on the overall implementation of the system and walks through how the several separate systems interface together and interact in a way that provides the user with a positive experience.
+
+\section{Backend}
+
+The backend of the system is implemented in Node.js and provides the API that the frontend will interact with through REST requests and WebSocket messages. TypeScript \cite{typescript} is being used rather than plain JavaScript in order to provide support for static types and catch more errors during the build time compilation rather than during run time.
+
+\subsection{Database}
+
+The database is a straightforward MongoDB \cite{mongo} implementation with two collections, one for exercises and one for activities. An exercise can have many activities but activities can only belong to one exercise.
+
+%TODO: Relational mapping?
+
+For the Node server to be able to make database calls the MongoDB API must be queried against, this is done by using the \textbf{mongoose} package \cite{mongoose}.
+
+\subsection{REST API}
+
+To provide an API that a frontend can interact with to retrieve information from the database, a REST API is created with the Express framework \cite{express}. Creating an API endpoint with Express is a simple process that roughly follows the formula of:
+
+\texttt{AppObject.RequestType("Endpoint", CallbackFunction)}
+
+Where \textit{AppObject} is the variable representing the instance of the server. \textit{RequestType} is usually one of GET or POST. \textit{Endpoint} is a string representing the local path the handles the request and \textit{CallbackFunction} is the function that handles the request and sends the response.
+
+so the code \texttt{app.get("/profile", callback)} is the function that would handle GET requests to the \textbf{/profile} endpoint. 
+
+The only REST endpoints in the backend code are related to the exercises section of the system as those need to be stored in a global database. Most of the communication between the front and back is implemented through WebSocket connections.
+
+\subsubsection{Get Exercise Endpoint}
+
+The \textbf{/exercise} endpoint is a GET request that returns the related exercise in the database that corresponds with the ID that is sent along in the query string.
+
+The callback function that deals with the request and sends a response is shown for this endpoint and it sends a response of 404 if it can't find the exercise based on the ID passed in the request and a 500 if there was an error with processing the request (such as if the database is down). Otherwise it will send a 200 and the exercise JSON object.
+
+\begin{verbatim}
+server.get("/exercise", (req: Request, res: Response) => {
+    const { id } = req.query;
+
+    Exercise.findById(id)
+        .populate("activities")
+        .exec()
+        .then(exercise => {
+            if (exercise) {
+                res.send(exercise);
+                return;
+            }
+            res.sendStatus(404);
+        })
+        .catch(err => {
+            res.status(500).json(err);
+        });
+});
+\end{verbatim}
+
+\subsubsection{Create Exercise Endpoint}
+
+The \textbf{/create} endpoint is a POST request used when a user makes a new exercise. Here the request object is broken down to get the parameters sent with the request and is turned into objects that can be inserted into the database.
+
+The response is the endpoint that the frontend can use to navigate to the page for the newly generated exercise.
+
+\begin{verbatim}
+server.post("/create", (req: Request, res: Response) => {
+    /**
+        Code to handle create request
+
+        This is quite a lot of code refer to appendix %TODO:
+    */
+});
+\end{verbatim}
+
+\subsection{Docker Integration}
+
+For the backend to have the ability to create and link Docker containers to a user running the application on the frontend it needs to be able to interact with the \textit{Docker Socket}. Every machine with an installation of the Docker Engine has a Docker Socket which is what the Docker CLI uses when commands are run against it.
+
+There is a popular package on NPM called \textbf{Dockerode} \cite{dockerode} which enables interaction with the Docker API via whatever socket/path is provided in it's configuration.
+
+The following code snippet shows the instantiation of the Dockerode package using the local Docker socket and exports it for use in other files in the project's backend.
+
+\begin{verbatim}
+    import Docker = require("dockerode");
+    const SOCKET_PATH = "/var/run/docker.sock";
+    const options = { socketPath: SOCKET_PATH };
+    export default new Docker(options);
+\end{verbatim}
+
+\subsubsection{Provisioning a User Container}
+
+For the users personalised requirement they 
+
+\subsubsection{Provisioning an Exercise Container}
+
+\subsubsection{Streams}
+
+\subsubsection{Executing Code}
+
+\subsection{WebSockets}
+
+\subsubsection{Message Types}
+
+\subsubsection{WebSocket Streams}
+
+\section{Frontend}
+
+\subsection{Home Page}
+
+\subsection{Sandbox Page}
+
+\subsection{Exercises Page}
+
+\subsection{Exercise Page}
+
+\section{Tool Suite}
+
+\subsection{Ahab}
+
 \pagebreak
