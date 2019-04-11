@@ -1,17 +1,17 @@
 % --------------------------------------------------
 % Method
 % --------------------------------------------------
-\chapter{The Solution Approach}
+\chapter{The Solution Approach} \label{solapp}
 % Here you should identify and evaluate the solution options against your problem statement / technical specification and make a reasoned choice of your chosen solution approach. Why did you do what you did? Conclude with a succinct definition of your solution approach and criteria by which the solution would be accepted as adequately verified. It is very likely that you will add further reference material in this section.
 
-\section{Solutions for Environment Virtualisation}
+\section{Solutions for Environment Virtualisation} \label{subapp-virt}
 In order to provide users with the most 'local' experience as possible on a remote platform it is key to analyse various technologies and techniques that are currently in widespread use in the industry. As discussed during Chapter \ref{lit} there is an consensus in the industry that containers are the better solution for PaaS type software of which this project would fall into the category of.
 
-There are many different container solutions available currently, many have similar roots such as a backbone of using LXC but they build on top of those foundations in varying ways. Some of these ways are documented in the paper which was discussed in Section \ref{lit-containers} \cite{contsvsvirt}. This paper performed a comparison of the various different container technologies and stacked them against each other on key implementation features such as performance and security. 
+There are many different container solutions available currently, many have similar roots such as a backbone of using LXC but they build on top of those foundations in varying ways. Some of these ways are documented in the paper which was discussed in Section \ref{lit-containers} \cite{contsvsvirt}. This paper performed a comparison of the various different container technologies and stacked them against each other on key implementation features such as performance and security.
 
 The decision to not research Virtual Machines as a potential solution for the system is due to the project not requiring the utility of a hypervisor. As almost all developer tools are freely available through most Linux distributions. This means that there are few to no downsides of using a container based solution versus a fully blown Virtual Machine set up and many benefits.
 
-\subsection{Container Providers}
+\subsection{Container Providers} 
 
 A big limitation of OpenVZ is that it can't run on the standard Linux kernel so it is not a very viable solution for this project as the aim to to deploy the system and requiring a modified kernel will add complexity.
 
@@ -19,7 +19,7 @@ A big limitation of OpenVZ is that it can't run on the standard Linux kernel so 
 
 For the system, Docker seems to be the clear choice as it provides good tooling with its daemon. A strong foundation on top of LXC, and it doesn't require additional modification before it can be used on a computer/server which is preferable to avoid for this project.
 
-\section{Chosen Solution for Real-Time Communication}
+\section{Chosen Solution for Real-Time Communication} \label{solapp-rtc}
 
 Based off the research performed in Section \ref{lit-rtc} it would seem as though WebSockets fit the requirement of the project in order to ensure rapid communication between the client and their virtual development environment.
 
@@ -29,13 +29,13 @@ WebSockets are available through the native Web APIs and so no 3rd party depende
 
 On the server side there are a few ways to implement a WebSocket endpoint but as Node.js and Express are already being used for the REST api it using a 3rd party dependency such as \texttt{express-ws} makes the most sense.
 
-\section{Requirements for Frontend}
+\section{Requirements for Frontend} \label{solapp-frontend}
 
 In order to create an experience that emulates a local installation of tooling and a text editor it is necessary to make sure that a tooling solution is chosen for this project that can meet these needs. The key requirements for the user facing side of this project are:
 
 \begin{enumerate}
-    \item Text Editor with essential features that users expect in a standard developer environment
-    \item A terminal emulator that can display output of code to users and allow input where it is appropriate
+  \item Text Editor with essential features that users expect in a standard developer environment
+  \item A terminal emulator that can display output of code to users and allow input where it is appropriate
 \end{enumerate}
 
 Without these two features there is no way to adequately provide users with an environment that can be anywhere near the level of quality that they would expect from a local installation of tools.
@@ -47,11 +47,11 @@ A text editor is a vital part of a developers tool-chain and a few solutions exi
 With this in mind it is helpful to establish a list of features that are a key requirement for any text editor.
 
 \begin{itemize}
-    \item Automatic indentation
-    \item Syntax colouring 
-    \item Control + F compatibility for Find
-    \item Bracket matching
-    \item Copy-Paste compatibility
+  \item Automatic indentation
+  \item Syntax colouring
+  \item Control + F compatibility for Find
+  \item Bracket matching
+  \item Copy-Paste compatibility
 \end{itemize}
 
 With these features in mind it is now worth investigating the available resources to see which one satisfies the features best and if any bonus features cna be found.
@@ -78,7 +78,7 @@ Monaco does not have as many themes available as the alternatives but the featur
 
 \subsubsection{Decision on Text Editor}
 
-Based on the details above it makes a huge amount of sense to use the \textbf{Monaco Editor}, being provided by Microsoft is a significant benefit and the fact that it powers one of the most popular code editors that is being used in the industry means that it will provide as close an experience to a local coding environment as any of the other options. 
+Based on the details above it makes a huge amount of sense to use the \textbf{Monaco Editor}, being provided by Microsoft is a significant benefit and the fact that it powers one of the most popular code editors that is being used in the industry means that it will provide as close an experience to a local coding environment as any of the other options.
 
 Giving users experience with this tool will mean the transition to local development tools will be less abrasive as they already know the features that are available in these industry tools. The ability to provide auto complete for some languages is a huge benefit as well as new developers can be sure that the syntax they write is correct.
 
@@ -86,11 +86,11 @@ Giving users experience with this tool will mean the transition to local develop
 
 For online emulation of a terminal/command line the most popular solution is \textbf{Xterm.js} which has widespread adoption across many developer tools that require emulation of a terminal. It is used with VSCode in order to give users access to their local shell. It is highly performance focused in order to provide low to no latency between keystrokes and when they render on the screen. It also provides an array of addons that mean the terminal can be connected to a WebSocket stream so the online terminal can be connected to a real terminal on a machine. This is a key feature of a local development environment and therefore Xterm.js is ideal for this project.
 
-\section{Solution for Building the Interface}
+\section{Solution for Building the Interface} \label{solapp-tools}
 
 With the solutions established above it is now appropriate to evaluate the options when it comes to how to build the whole user facing side of the system.
 
-As the developer has the most experience building websites using the \texttt{React} library (https://reactjs.org/) to help with creating reactive, data driven, single page web applications, that is the overarching technology that will be used to build the solution. 
+As the developer has the most experience building websites using the \texttt{React} library (https://reactjs.org/) to help with creating reactive, data driven, single page web applications, that is the overarching technology that will be used to build the solution.
 
 Within the React ecosystem however, there is a number of options about how to manage certain essential features such as page routing and how to style components in a way that fits into the React methodology.
 
@@ -100,7 +100,7 @@ In order to get started with React the recommended way is to use a package calle
 
 It is necessary then to evaluate some other options for getting started with a React application that allows for the configuration options that means syntax colouring works.
 
-The popular options in the community are: ejecting a CRA project, Next.js or Razzle. 
+The popular options in the community are: ejecting a CRA project, Next.js or Razzle.
 
 \subsubsection{Eject Create-React-App}
 Ejecting a CRA provides the developer with full access to all the configuration options that are previously abstracted away. It also installs a lot of dependencies that need to be maintained correctly and the configurable options are overwhelming when all that's required is a few lines added to a config file. This solution is undesirable.
@@ -109,13 +109,13 @@ Ejecting a CRA provides the developer with full access to all the configuration 
 Next.js advertises itself as a React 'framework' as it provides many additional features out of the box versus traditional CRA projects. It offers functionality for:
 
 \begin{itemize}
-    \item Routing via the File System
-    \item Code Splitting
-    \item Server Side Rendering
-    \item High Level Configuration
+  \item Routing via the File System
+  \item Code Splitting
+  \item Server Side Rendering
+  \item High Level Configuration
 \end{itemize}
 
-With these features, fewer external dependencies are required and the configuration which is needed to get syntax colourisation working is available. 
+With these features, fewer external dependencies are required and the configuration which is needed to get syntax colourisation working is available.
 
 \subsubsection{Razzle - https://github.com/jaredpalmer/razzle}
 
@@ -129,30 +129,30 @@ Despite similar configuration extensibility as Next.js trying to enable syntax c
 
 As syntax colouring has been described as a key feature there isn't much of a choice beyond choosing to use either Next.js or the Ejected CRA. As Next.js has a number of other benefits however, this makes it the most attractive and powerful option for building the frontend.
 
-\section{Design Prototypes}
+\section{Design Prototypes} \label{solapp-design}
 
 Trying to build a system that provides users with an environment where they feel as though there's not a high barrier to entry involves a design process which has to ensure that things are arranged in as friendly a way as possible.
 
 Some sketches were done in order to try to narrow down what kind of design language should be used to give the users a sense of friendless versus the more stark, professional look that some developer focused websites aim for \texttt{StackOverflow dot com}. Based on these general requirements the following low fidelity prototypes were created presenting different ways that information could be displayed for users.
 
 \begin{figure}[!htb]
-\minipage{0.32\textwidth}
+  \minipage{0.32\textwidth}
   \includegraphics[width=\linewidth]{res/lofi-prototype-1.jpg}
   \caption{Prototype 1}\label{fig:lofi-prototype-1}
-\endminipage\hfill
-\minipage{0.32\textwidth}
+  \endminipage\hfill
+  \minipage{0.32\textwidth}
   \includegraphics[width=\linewidth]{res/lofi-prototype-2.jpg}
   \caption{Prototype 2}\label{fig:lofi-prototype-2}
-\endminipage\hfill
-\minipage{0.32\textwidth}
+  \endminipage\hfill
+  \minipage{0.32\textwidth}
   \includegraphics[width=\linewidth]{res/lofi-prototype-3.jpg}
   \caption{Prototype 3}\label{fig:lofi-prototype-3}
-\endminipage
+  \endminipage
 \end{figure}
 
 \subsection{Prototype One}
 
-Prototype design one uses small blocks of informative text which orbit around a circular shape in the middle. Not having significantly large blocks of text means the user won't be intimidated by the information being displayed to them. 
+Prototype design one uses small blocks of informative text which orbit around a circular shape in the middle. Not having significantly large blocks of text means the user won't be intimidated by the information being displayed to them.
 
 The circle is a technique that designers use in order to draw the viewers attention to a specific area. Although it is not shown in the prototype image the font styles that are in use are: one serif font for the display text (the titles and headings) and one sans serif font for the body text (bulk of text).
 
@@ -176,8 +176,10 @@ No specific font styles were decided upon for this prototype.
 
 \section{Overall declaration of solution chosen}
 
-Based off of the research conducted in Chapter \ref{lit} and the potential woes of implementing some of the solutions proposed in this chapter. The current solution approach for creating a full implementation of the system is to have a Next.js frontend with a backend that uses Docker containers in order to implement virtual environments for users. The frontend will make use of the Monaco code editor and the Xterm terminal emulator. Communication between the containers and the frontend will be done with the WebSockets RTC method. 
+Based off of the research conducted in Chapter \ref{lit} and the potential woes of implementing some of the solutions proposed in this chapter. The current solution approach for creating a full implementation of the system is to have a Next.js frontend with a backend that uses Docker containers in order to implement virtual environments for users. The frontend will make use of the Monaco code editor and the Xterm terminal emulator. Communication between the containers and the frontend will be done with the WebSockets RTC method.
 
 % TODO: put a diagram of the overall structure here (low level)
+
+% TODO: talk about backend stuff here as well :(
 
 \pagebreak

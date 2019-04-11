@@ -9,6 +9,17 @@
     style=ieee
 ]{biblatex}
 \usepackage[toc]{appendix} % use [page] to include appendix title page
+\usepackage{listings}
+\usepackage[most]{tcolorbox}
+\usepackage{inconsolata}
+
+\definecolor{mygreen}{rgb}{0,0.6,0}
+\definecolor{mymauve}{rgb}{0.58,0,0.82}
+
+\newtcblisting[auto counter]{sexylisting}[2][]{sharp corners, 
+    fonttitle=\bfseries, colframe=darkgray, colback=white, listing only, 
+    listing options={basicstyle=\ttfamily,language=java,morekeywords={export,function,let,await,require},commentstyle=\color{mygreen},keywordstyle=\color{blue},showstringspaces=false}, 
+    title=Snippet \thetcbcounter: #2, #1}
 
 \addbibresource{references.bib}
 \setlength{\parindent}{1em}

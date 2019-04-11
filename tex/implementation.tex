@@ -37,7 +37,7 @@ The \textbf{/exercise} endpoint is a GET request that returns the related exerci
 
 The callback function that deals with the request and sends a response is shown for this endpoint and it sends a response of 404 if it can't find the exercise based on the ID passed in the request and a 500 if there was an error with processing the request (such as if the database is down). Otherwise it will send a 200 and the exercise JSON object.
 
-\begin{verbatim}
+\begin{sexylisting}{Snippet for /exercise endpoint}
 server.get("/exercise", (req: Request, res: Response) => {
     const { id } = req.query;
 
@@ -55,7 +55,7 @@ server.get("/exercise", (req: Request, res: Response) => {
             res.status(500).json(err);
         });
 });
-\end{verbatim}
+\end{sexylisting}
 
 \subsubsection{Create Exercise Endpoint}
 
@@ -63,7 +63,7 @@ The \textbf{/create} endpoint is a POST request used when a user makes a new exe
 
 The response is the endpoint that the frontend can use to navigate to the page for the newly generated exercise.
 
-\begin{verbatim}
+\begin{sexylisting}{Snippet for /create endpoint}
 server.post("/create", (req: Request, res: Response) => {
     /**
         Code to handle create request
@@ -71,7 +71,7 @@ server.post("/create", (req: Request, res: Response) => {
         This is quite a lot of code refer to appendix %TODO:
     */
 });
-\end{verbatim}
+\end{sexylisting}
 
 \subsection{Docker Integration}
 
@@ -81,30 +81,208 @@ There is a popular package on NPM called \textbf{Dockerode} \cite{dockerode} whi
 
 The following code snippet shows the instantiation of the Dockerode package using the local Docker socket and exports it for use in other files in the project's backend.
 
-\begin{verbatim}
-    import Docker = require("dockerode");
-    const SOCKET_PATH = "/var/run/docker.sock";
-    const options = { socketPath: SOCKET_PATH };
-    export default new Docker(options);
-\end{verbatim}
+\begin{sexylisting}{Snippet to create Docker instance and point it to local Socket}    
+import Docker = require("dockerode");
+const SOCKET_PATH = "/var/run/docker.sock";
+const options = { socketPath: SOCKET_PATH };
+export default new Docker(options);
+\end{sexylisting}
 
-\subsubsection{Provisioning a User Container}
+\subsubsection{Provisioning a User Allocated Container}
 
-For the users personalised requirement they 
+Creating a container for every user that connects to the system requires the concept of a \textit{basic image}. This image is a Dockerfile which specifies the defaults for all user's environments. The Dockerfile is responsible for configuring the environment so that it is secure and pre-installed with all the tools that the user might need.
+
+The basic image, comes with the following software pre-installed: 
+
+\begin{itemize}
+    \item Alpine Linux Distro
+    \item Bash
+    \item Python3
+    \item Node.js
+    \item GCC
+    \item Git
+\end{itemize}
+
+Alpine Linux is the distribution that the base image of the container which is based on Ubuntu. Bash is a very common shell which is a better default than the standard \textit{ash} or \textit{sh} which are the shells that come with the Alpine image. Bash is important for the code execution aspect of the system which is explained further in \textit{Executing Code - \ref{imp-execode}}. Python, Node and GCC are chosen as those are the 3 runtimes that are supported by the system. Git is installed so if the user writes something that they want to be able to save they can use Git through the command line.
+
+% TODO: Ref the dockerfile in the appendix
+Some additional configuration that is done in this Dockerfile is the creation of the user account that users of the system will be operating as while they're connected to the container. By default the Docker engine sets the user of a container as root but this is obviously not appropriate for a system where anyone can play with a container so a low permission user is created called \textit{damien} who has their own home folder and ownership of that folder but everything under the root directory is protected.
+
+The JavaScript to create the container for the user is a simple function call referencing the Docker API variable.
+
+\begin{sexylisting}{Snippet to create container with options}
+const container = await docker.createContainer({
+    Image: "basic",
+    AttachStdin: true,
+    AttachStdout: true,
+    AttachStderr: true,
+    Tty: true,
+    Cmd: ["/bin/bash"],
+    OpenStdin: true,
+    StdinOnce: false,
+    name
+});
+\end{sexylisting}
+
+This tells the API to create a container using the image with the label "basic" which is what the Dockerfile described above has the label of. The various \texttt{AttachX} properties tell the container if they should allow other processes to attach to this containers Standard Input/Output/Error which, as this container is emulated on the front end is required to be \texttt{true}. Tty refers to an old way of referring to the interface for a terminal. Without this option set to true it won't display in a way that looks like a traditional command line environment. Cmd is the command that the container should run once it's been created, in this case it needs to run bash. OpenStdin allows standard input to the TTY. StdinOnce will close the STDIN connection if an attached user disconnects, this needs to be off for this system as going between an exercise and a container will detach in the way that satisfies this requirement and it needs to be able to reconnect to the STDIN. The name property is simply the labelled name of the container which is displayed to the user when they connect.
 
 \subsubsection{Provisioning an Exercise Container}
 
-\subsubsection{Streams}
+Provisioning the exercise container is more or less the same as the user's allocated container but it has to pause the allocated container so that resources aren't being wasted and then create the container for the exercise.
 
-\subsubsection{Executing Code}
+Exercise containers are created when a user enters an exercise and are destroyed when a user leaves the exercise. The are created the same way with the same configuration as the allocated containers however the image they are based from is the simplest REPL image that exists that relates to the runtime that the exercise is for.
+
+\subsubsection{Executing Code} \label{imp-execode}
+
+Getting code from the server to inside a file on the container and then executing is a fundamental requirement of this project and is achieved by taking advantage of Bash which is configured to come on every container created by the system.
+
+The execute command in Docker (exec) is only capable of running a single command with arguments. In Bash however there is a way of chaining commands as arguments using the \textbf{-c} option. A JavaScript function called \texttt{getCodeSaveCommand} creates the command that the Docker execute command can run in order to save the file.
+
+\begin{sexylisting}{Snippet to create command to save code to container}
+export function getCodeSaveCommand(filename, code) {
+    let cmd = ["/bin/bash", "-c"];
+
+    code = code.replace(/`/g, "\\`");
+
+    cmd.push(`echo "${code}" > ${filename}`);
+
+    return cmd;
+}
+\end{sexylisting}
+
+This snippet will add an escape character in front of all double quotes so that the double quotes don't finish the \texttt{bash -c} command and add command that saves the code to the specified file to the cmd array. This array is what the CMD option accepts. 
+
+After the file has been saved successfully a message is sent to the client confirming the save and the client sends an attach request for the code execution so that the STDIN and STDOUT can be attached to the terminal emulator.
+
+The execute command to run the code is more straight forward than the command to save it to a file.
+
+\begin{sexylisting}{Snippet for creating the code execution command for the container}
+export function getCodeExecutionCommand(filename, repl) {
+    let cmd = ["/bin/bash", "-c"];
+    
+    if (repl === Repl.C) {
+        return cmd.concat(
+            `gcc ${filename} && ./a.out && rm a.out`
+        );
+    } else {
+        return cmd.concat(
+            `${repl} ${filename}`
+        );
+    }
+}
+\end{sexylisting}
+
+This snippet works along the same lines as the previous however more steps are involved for the C compilation step as an output file is generated which has to be executed.
 
 \subsection{WebSockets}
 
+As mentioned in the Solution Approach (Section \ref{solapp-rtc}) the standard WebSocket client that is available as a browser API and on the backend a middleware package \texttt{express-ws} \cite{expressws} is being used to allow connections to the server using the WebSocket protocol.
+
+\subsubsection{Endpoint Configuration}
+
+For the server to be able to create a WebSocket connection with clients and endpoint must be created that accepts the WebSocket protocol. 
+
+\begin{sexylisting}{Snippet showing setup of WebSocket Endpoint}
+    server.ws("/", (ws: WebSocket) => {
+        console.log("Connection Made");
+        startBasicContainer(ws)
+        {...}
+    }
+\end{sexylisting}
+
+The snippet above shows that a WebSocket connection can be made to the root endpoint of the server and once the connection is made it is logged to the console and the function to create the basic user allocated container is called.
+
+\subsubsection{Message Structure}
+
+WebSockets are only capable of sending strings of text in their messages however, as JSON is a way of representing objects through strings a template message guide can be created.
+
+\begin{sexylisting}{Snippet showing WS message}
+    const message = {
+        type: MessageTypes.CONTAINER_STOP,
+        data: { id }
+    };
+
+    socket.send(JSON.stringify(message));
+\end{sexylisting}
+
+This snippet shows that an example message which is a JSON object with two properties \texttt{type}, which represents the type of the message being sent, and \texttt{data} which is an object itself which contains any relevant information that might be useful for the other end of the socket. In this case the type of the message is a flag to stop a running container and the data is the ID of the container. This is sent after being stringify-ed by the built in JSON object.
+
 \subsubsection{Message Types}
+
+As can be seen above each message has a type. These types are processed through a \texttt{switch statement} which inspects the type, extracts the parameters from the \texttt{data} property and makes a function call.
+
+\begin{sexylisting}{Snippet showing how the messages are processed by the backend}
+    const { type, data } = JSON.parse(msg);
+    switch (type) {
+        case "Container.Pause":
+            // Used when focus is lost from tab
+            console.log("Pausing container");
+            stopContainer(ws, data.id);
+            break;
+        case "Container.Resume":
+            // Used when focus is resumed via tab
+            console.log("Resuming container");
+            resumeContainer(ws, data.id);
+            break;
+        {...}
+\end{sexylisting}
+
+The first thing that is done when the message is received is, as the message is a string, it is parsed into JavaScript objects and the \texttt{type} and \texttt{data} properties are extracted. The \texttt{type} is switched against and based on what the value of it is. A string is logged to the console showing what action the server is performing and a function is called which will always pass the WebSocket object (so the server can reply) and then passes any relevant data that is required by that function. 
 
 \subsubsection{WebSocket Streams}
 
+Streams is a concept in programming which quite directly means a \textit{stream of data}. Streams are used most often to act on a huge amount of data in a more performance focused way. Streams of events are the types of streams that are used in this project however as the Docker containers are able to stream their STDIN and STDOUT. Using the Node.js Stream API it is possible to \texttt{pipe()} these streams over WebSockets.
+
+The package \texttt{websocket-stream} is used in the server to enable the streams to be piped over the WebSocket connection.
+
+\begin{sexylisting}{Snippet showing endpoint which connects the container stream to the WebSocket}
+server.ws("/connect", (ws: WebSocket, req: Request) => {
+    const stream = websocketStream(ws, { binary: true });
+    console.log("Trying to connect streams");
+
+    attachSocketToContainer(
+        stream,
+        req.query.id,
+        req.query.bidirectional,
+        req.query.logs
+    );
+});
+\end{sexylisting}
+
+This snippet shows that a WebSocket connection can be opened to the \texttt{/connect} endpoint of the server where a stream will be created from the WebSocket. When the connection is made a function is called to attach the WebSocket stream to the container stream and it passes the stream created by the websocket-stream package, the id of the container to attach the stream to, whether the stream is bidirectional (allows STDIN and STDOUT) and if the previous logs from the container should be allowed.
+
+Streams are a core concept in Node.js so passing one stream to another is simple.
+
+\begin{sexylisting}{Snippet showing the attachment of the container stream to the WebSocket stream}
+container.attach(
+    {
+        stream: true,
+        stdout: true,
+        stderr: true,
+        stdin: isBidirectional,
+        logs: showLogs
+    },
+    function(err: Error, stream) {
+        {Error Handling here...}
+        console.log("Stream Connection Established!");
+        if (isBidirectional) {
+            stream.pipe(wss);
+            wss.pipe(stream);
+        } else {
+            stream.pipe(wss);
+        }
+    }
+);
+\end{sexylisting}
+
+The snippet above is showing the Docker API making a call to attach to the running container which was calculated based off the ID passed to the function. The options show that the \texttt{stream} option is set to true, the \texttt{stdin} option is dependent on if the stream is set to be bidirectional or not and the \texttt{logs} are also determined by the parameter passed from the query string.
+
+The callback function does error handling and then will pipe the container stream to the WebSocket stream. If bidirectional flow is enabled, it will also pipe the WebSocket stream to the container. 
+
+
 \section{Frontend}
+
+\subsection{WebSockets}
 
 \subsection{Home Page}
 

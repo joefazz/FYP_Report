@@ -1940,6 +1940,7 @@
     <bcf:citekey order="14">mongoose</bcf:citekey>
     <bcf:citekey order="15">express</bcf:citekey>
     <bcf:citekey order="16">dockerode</bcf:citekey>
+    <bcf:citekey order="17">expressws</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
