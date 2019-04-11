@@ -37,7 +37,7 @@ The \textbf{/exercise} endpoint is a GET request that returns the related exerci
 
 The callback function that deals with the request and sends a response is shown for this endpoint and it sends a response of 404 if it can't find the exercise based on the ID passed in the request and a 500 if there was an error with processing the request (such as if the database is down). Otherwise it will send a 200 and the exercise JSON object.
 
-\begin{sexylisting}{Snippet for /exercise endpoint}
+\begin{sexylisting}{/exercise endpoint}
 server.get("/exercise", (req: Request, res: Response) => {
     const { id } = req.query;
 
@@ -63,7 +63,7 @@ The \textbf{/create} endpoint is a POST request used when a user makes a new exe
 
 The response is the endpoint that the frontend can use to navigate to the page for the newly generated exercise.
 
-\begin{sexylisting}{Snippet for /create endpoint}
+\begin{sexylisting}{/create endpoint}
 server.post("/create", (req: Request, res: Response) => {
     /**
         Code to handle create request
@@ -81,7 +81,7 @@ There is a popular package on NPM called \textbf{Dockerode} \cite{dockerode} whi
 
 The following code snippet shows the instantiation of the Dockerode package using the local Docker socket and exports it for use in other files in the project's backend.
 
-\begin{sexylisting}{Snippet to create Docker instance and point it to local Socket}    
+\begin{sexylisting}{Create Docker instance and point it to local Socket}    
 import Docker = require("dockerode");
 const SOCKET_PATH = "/var/run/docker.sock";
 const options = { socketPath: SOCKET_PATH };
@@ -110,7 +110,7 @@ Some additional configuration that is done in this Dockerfile is the creation of
 
 The JavaScript to create the container for the user is a simple function call referencing the Docker API variable.
 
-\begin{sexylisting}{Snippet to create container with options}
+\begin{sexylisting}{Create container with options}
 const container = await docker.createContainer({
     Image: "basic",
     AttachStdin: true,
@@ -138,7 +138,7 @@ Getting code from the server to inside a file on the container and then executin
 
 The execute command in Docker (exec) is only capable of running a single command with arguments. In Bash however there is a way of chaining commands as arguments using the \textbf{-c} option. A JavaScript function called \texttt{getCodeSaveCommand} creates the command that the Docker execute command can run in order to save the file.
 
-\begin{sexylisting}{Snippet to create command to save code to container}
+\begin{sexylisting}{Create command to save code to container}
 export function getCodeSaveCommand(filename, code) {
     let cmd = ["/bin/bash", "-c"];
 
@@ -156,7 +156,7 @@ After the file has been saved successfully a message is sent to the client confi
 
 The execute command to run the code is more straight forward than the command to save it to a file.
 
-\begin{sexylisting}{Snippet for creating the code execution command for the container}
+\begin{sexylisting}{Creating the code execution command for the container}
 export function getCodeExecutionCommand(filename, repl) {
     let cmd = ["/bin/bash", "-c"];
     
@@ -174,15 +174,15 @@ export function getCodeExecutionCommand(filename, repl) {
 
 This snippet works along the same lines as the previous however more steps are involved for the C compilation step as an output file is generated which has to be executed.
 
-\subsection{WebSockets}
+\subsection{WebSockets - Backend}
 
 As mentioned in the Solution Approach (Section \ref{solapp-rtc}) the standard WebSocket client that is available as a browser API and on the backend a middleware package \texttt{express-ws} \cite{expressws} is being used to allow connections to the server using the WebSocket protocol.
 
-\subsubsection{Endpoint Configuration}
+\subsubsection{Endpoint Configuration} \label{impl-ws-config}
 
 For the server to be able to create a WebSocket connection with clients and endpoint must be created that accepts the WebSocket protocol. 
 
-\begin{sexylisting}{Snippet showing setup of WebSocket Endpoint}
+\begin{sexylisting}{Setup of WebSocket Endpoint}
     server.ws("/", (ws: WebSocket) => {
         console.log("Connection Made");
         startBasicContainer(ws)
@@ -192,11 +192,11 @@ For the server to be able to create a WebSocket connection with clients and endp
 
 The snippet above shows that a WebSocket connection can be made to the root endpoint of the server and once the connection is made it is logged to the console and the function to create the basic user allocated container is called.
 
-\subsubsection{Message Structure}
+\subsubsection{Message Structure} \label{impl-ws-msg-struct}
 
 WebSockets are only capable of sending strings of text in their messages however, as JSON is a way of representing objects through strings a template message guide can be created.
 
-\begin{sexylisting}{Snippet showing WS message}
+\begin{sexylisting}[label={code:ws-msg}]{WS message}
     const message = {
         type: MessageTypes.CONTAINER_STOP,
         data: { id }
@@ -207,11 +207,11 @@ WebSockets are only capable of sending strings of text in their messages however
 
 This snippet shows that an example message which is a JSON object with two properties \texttt{type}, which represents the type of the message being sent, and \texttt{data} which is an object itself which contains any relevant information that might be useful for the other end of the socket. In this case the type of the message is a flag to stop a running container and the data is the ID of the container. This is sent after being stringify-ed by the built in JSON object.
 
-\subsubsection{Message Types}
+\subsubsection{Message Types} \label{impl-ws-msg-type}
 
 As can be seen above each message has a type. These types are processed through a \texttt{switch statement} which inspects the type, extracts the parameters from the \texttt{data} property and makes a function call.
 
-\begin{sexylisting}{Snippet showing how the messages are processed by the backend}
+\begin{sexylisting}{How the messages are processed by the backend}
     const { type, data } = JSON.parse(msg);
     switch (type) {
         case "Container.Pause":
@@ -229,13 +229,13 @@ As can be seen above each message has a type. These types are processed through 
 
 The first thing that is done when the message is received is, as the message is a string, it is parsed into JavaScript objects and the \texttt{type} and \texttt{data} properties are extracted. The \texttt{type} is switched against and based on what the value of it is. A string is logged to the console showing what action the server is performing and a function is called which will always pass the WebSocket object (so the server can reply) and then passes any relevant data that is required by that function. 
 
-\subsubsection{WebSocket Streams}
+\subsubsection{WebSocket Streams} \label{impl-ws-streams}
 
 Streams is a concept in programming which quite directly means a \textit{stream of data}. Streams are used most often to act on a huge amount of data in a more performance focused way. Streams of events are the types of streams that are used in this project however as the Docker containers are able to stream their STDIN and STDOUT. Using the Node.js Stream API it is possible to \texttt{pipe()} these streams over WebSockets.
 
 The package \texttt{websocket-stream} is used in the server to enable the streams to be piped over the WebSocket connection.
 
-\begin{sexylisting}{Snippet showing endpoint which connects the container stream to the WebSocket}
+\begin{sexylisting}{Endpoint which connects the container stream to the WebSocket}
 server.ws("/connect", (ws: WebSocket, req: Request) => {
     const stream = websocketStream(ws, { binary: true });
     console.log("Trying to connect streams");
@@ -253,7 +253,7 @@ This snippet shows that a WebSocket connection can be opened to the \texttt{/con
 
 Streams are a core concept in Node.js so passing one stream to another is simple.
 
-\begin{sexylisting}{Snippet showing the attachment of the container stream to the WebSocket stream}
+\begin{sexylisting}{Attachment of the container stream to the WebSocket stream}
 container.attach(
     {
         stream: true,
@@ -280,17 +280,116 @@ The snippet above is showing the Docker API making a call to attach to the runni
 The callback function does error handling and then will pipe the container stream to the WebSocket stream. If bidirectional flow is enabled, it will also pipe the WebSocket stream to the container. 
 
 
+
+
 \section{Frontend}
 
-\subsection{WebSockets}
+The general approach for developing the frontend of the project is stated in Chapter \ref{solapp} in Section \ref{solapp-frontend} but a number of other packages were used to make the development of the solution smoother and less error prone. Namely, TypeScript \cite{typescript} was used rather than plain JavaScript and Styled Components \cite{styledcomp} was used in addition to regular CSS to make implementing the design more straightforward.
+
+The frontend consists of 4 pages or screens all of which have varying degrees of functionality and interaction with both the backend and the user.
+
+\subsection{WebSockets - Frontend}
+
+The WebSocket configuration is fairly similar to the backend. The browser has the WebSocket object in it's global scope so there is no need to import a package like had to be done for the backend.
+
+All the configuration for setting up the WebSocket connection and handling events is done in the \texttt{componentDidMount()} lifecycle of the entire application.
+
+\subsubsection{Starting the Connection}
+
+\begin{sexylisting}{WS connection setup}
+    componentDidMount() {
+        this.socket = new WebSocket('ws://localhost:4000/');
+
+        this.socket.onopen = () => {
+            console.log('Socket Opened');
+        };
+
+        {...}
+    }
+\end{sexylisting}
+
+This snippet is creating a new WebSocket object and passing the URL of the path that the connection will be between. In this case it's the root WebSocket path that is shown in \ref{impl-ws-config} which initiates the container for the user.
+
+\subsubsection{Receiving Messages}
+
+As the structure of messages is predictable (see \ref{impl-ws-msg-struct}) the same approach to deal with messages is used on the client-side as the server-side.
+
+\begin{sexylisting}{WebSocket event listener}
+    {...}
+    this.socket.onmessage = (event) => {
+        const { type, data } = JSON.parse(event.data);
+
+        switch (type) {
+            case MessageTypes.CONTAINER_START:
+                console.log('Container Started');
+                {...}
+        {...}
+    {...}
+\end{sexylisting}
+
+Here the WebSocket is registering an \texttt{Event Listener} which performs the same basic \texttt{switch statement} that the backend is performing.
+
+After a message comes through, depending on it's content it will modify the global state of the application so that all screens are able to inspect the current state of the socket and any response that might be relevant to the functionality of that particular page. This global state is created with the built in Context API from React.
+
+\subsubsection{Sending Messages}
+
+Sending messages is performed the exact same way as it is from the backend, shown in Snippet \ref{code:ws-msg}
+
+\pagebreak
 
 \subsection{Home Page}
 
+This is the home page
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{res/home_page.png}
+    \caption{Landing Page/Home Page}
+    \label{fig:homepage}
+\end{figure}
+
+This is the connection thing 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{res/connection_status_with_popout.png}
+    \caption{Connection status with container name}
+    \label{fig:connection-popout}
+\end{figure}
+
+
 \subsection{Sandbox Page}
+
+This is the sandbox page
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{res/sandbox_page.png}
+    \caption{Sandbox Page}
+    \label{fig:sandboxpage}
+\end{figure}
 
 \subsection{Exercises Page}
 
+This is the exercises page
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{res/exercises_page.png}
+    \caption{Exercises Page}
+    \label{fig:exercisespage}
+\end{figure}
+
 \subsection{Exercise Page}
+
+This is the exercise page
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{res/exercise_page.png}
+    \caption{Exercise Page}
+    \label{fig:exercisepage}
+\end{figure}
 
 \section{Tool Suite}
 

@@ -1,19 +1,10 @@
-container.attach(
-    {
-        stream: true,
-        stdout: true,
-        stderr: true,
-        stdin: isBidirectional,
-        logs: showLogs
-    },
-    function(err: Error, stream) {
-        {Error Handling here...}
-        console.log("Stream Connection Established!");
-        if (isBidirectional) {
-            stream.pipe(wss);
-            wss.pipe(stream);
-        } else {
-            stream.pipe(wss);
-        }
-    }
-);
+    {...}
+    this.socket.onmessage = (event) => {
+        const { type, data } = JSON.parse(event.data);
+
+        switch (type) {
+            case MessageTypes.CONTAINER_START:
+                console.log('Container Started');
+                {...}
+        {...}
+    {...}
