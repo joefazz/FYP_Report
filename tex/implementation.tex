@@ -339,7 +339,7 @@ Sending messages is performed the exact same way as it is from the backend, show
 
 \subsection{Home Page}
 
-This is the home page
+The home page of the web app has the goal of showing users all the functionality of the system.
 
 \begin{figure}[h!]
     \centering
@@ -348,7 +348,7 @@ This is the home page
     \label{fig:homepage}
 \end{figure}
 
-This is the connection thing 
+At the top of the page there is a standard navigation bar which provides access to the homepage (by clicking on the name of the website), the sandbox page and the exercises page. The connection status uses a traffic light style green, yellow and red system to show the connection status to the users container. Clicking on it reveals the name of the container if connected and if there's an issue it says there's a problem.
 
 \begin{figure}[h!]
     \centering
@@ -357,10 +357,9 @@ This is the connection thing
     \label{fig:connection-popout}
 \end{figure}
 
+The home page also includes the Monaco code editor and a toggle for selecting a language so the whole functionality of the site can be sampled on this page. Picking any of the languages switches to the corresponding language and pressing \textit{Run} will execute the code and display the response in the pink output box below it which also displays the name of the container.
 
 \subsection{Sandbox Page}
-
-This is the sandbox page
 
 \begin{figure}[h!]
     \centering
@@ -369,9 +368,12 @@ This is the sandbox page
     \label{fig:sandboxpage}
 \end{figure}
 
-\subsection{Exercises Page}
+The sandbox page of the application has a simple file browser on the left which is created by passing the result of an \texttt{ls} Bash call on the container and sending the result to the client. In the middle is the Monaco code editor and on the right is the Xterm.js terminal emulator connected to the container's stream (see \ref{impl-ws-streams}). All three panes are resizeable.
 
-This is the exercises page
+The \texttt{Save} button will save the code to the container file that is currently open for it to be executed in the terminal emulator.
+
+
+\subsection{Exercises Page}
 
 \begin{figure}[h!]
     \centering
@@ -380,19 +382,40 @@ This is the exercises page
     \label{fig:exercisespage}
 \end{figure}
 
+The exercises page has a selection of available exercises on the left that will open the corresponding exercise screen. It also contains a form which users can create their own exercise in order to share with others or help mentor someone new to coding. Up to 15 separate activities can be made for any exercise.
+
 \subsection{Exercise Page}
 
-This is the exercise page
-
 \begin{figure}[h!]
-    \centering
+\centering
     \includegraphics[width=\linewidth]{res/exercise_page.png}
     \caption{Exercise Page}
     \label{fig:exercisepage}
 \end{figure}
 
-\section{Tool Suite}
+The exercise page is what the user is greeted with when they interact with one of the exercises on the left of the exercises page. It displays the information for the user on the left of the specific activity they're on which is indicated by the counter in the bottom right. 
 
-\subsection{Ahab}
+This page is the most complicated of all of user facing side of the application. When the \texttt{Run} button is pressed, the best user experience is to display the result in the terminal emulator. However, this is already attached to the exercise container and having more than once connection is not a viable solution. When \texttt{Run} is pressed the message to save the code must first be sent, when that comes back as successful, it detaches the terminal from the container and makes a new request to the \texttt{/connect} endpoint of the server (see \ref{impl-ws-streams}) to create but this time instead of passing the ID of the user's container it passes the ID of the exercise container.
+
+When this execution finishes, the connection is re-established with the normal REPL attached stream to provide a seamless experience between playing with the REPL and executing code.
+
+The \textit{Connection Status} in the nav bar has changed to a yellow status, this is due to the user's main container being paused while they are interacting with an exercise container. When the user navigates away from this exercise their main container is resumed and the exercise container is destroyed. 
+
+\section{ContainMENT - Container Management}
+
+Although containers are light weight and not very resource intensive, creating containers on demand as users make a connection with the site will lead a fairly significant scaling issue if there is no management of them in place.
+
+Currently there is only one ContainMENT tool in place which is \textbf{Ahab} (see \ref{impl-ahab}) but plans for additional tools are stated in Chapter \ref{conclusion}
+
+\subsection{Ahab} \label{impl-ahab}
+
+Ahab is a Python script that is responsible for making sure that any containers that have been idle for too long or exited recently are removed after a reasonable length of time so that the resources allocated to those containers can be freed for other users. The script is designed to be run every five minutes automatically as a \textbf{Cron job}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{res/Ahab.png}
+    \caption{Affect of script after every execution on containers}
+    \label{fig:ahab-diagram}
+\end{figure}
 
 \pagebreak
