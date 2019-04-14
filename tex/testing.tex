@@ -2,4 +2,103 @@
 % Testing and Validation
 % --------------------------------------------------
 \chapter{Testing: Verification and Validation}
+
+% Here you explain your approach to testing and show your results. Testing should be a directed process and so there should be some discussion of why you have done the tests you have and why they are appropriate to the validation of your problem solution. You should also consider the limits to your presented verification and validation.
+
+As this project has a lot of moving parts to it, testing is a necessary requirement to ensure how well the objectives stated in Chapter \ref{chapter:probart} have been met and how robust the system is generally.
+
+Testing of the actual code that composes the system was done primarily with the Jest testing framework \cite{jest}
+
+\section{Usability Testing}
+
+% go through all the functionality of the site and tabulate the results
+
+% Code editing experience - v good
+
+% Terminal emulator - some latency but not a deal breaker
+
+% Run button on the sandbox page
+
+% Nice having access to bash in the browser
+
+% Expert mode idea for either the REPL or the bash Terminal
+
+% Design - quite good
+
+% Resizing windows - helpful
+
+% Actually validate exercise output
+
+% Error boundaries, react
+
+% Error on homepage for when syntax is invalid etc
+
+\section{Compatibility}
+
+% TODO: use browser stack to make sure the website isn't shit on safari, Edge and opera. Will also need to add media query to show that the editor doesn't work on mobile.
+
+Although web applications don't have to worry about the metal of the system that the browser is relying on, several browsers use different engines and processors in order to render DOM elements to the screen. This means it's good practice to ensure the web application being developed is functional on the different popular and modern browsers.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{l|l|l}
+        \textbf{Browser} & \textbf{UI Compatibility} & \textbf{Functionality Compatibility} \\
+        \hline
+        \makecell[l]{Google Chrome} & \makecell{Fully Compatible} & \makecell{Fully Compatible} \\
+        \hline
+        \makecell[l]{Mozilla Firefox} & \makecell{Mostly compatible, only\\ noticable glitch is the page gains\\ padding when the Monaco\\auto complete appears} & \makecell{Fully Compatible} \\
+        \hline
+        \makecell[l]{Microsoft Edge} & \makecell{Partially compatible, strange\\squashing of nav bar component} & \makecell{Fully Compatible} \\
+        \hline
+        \makecell[l]{Apple Safari} & \makecell{Fully Compatible} & \makecell{Fully Compatible} \\
+        
+    \end{tabular}
+\end{table}
+
+It's worth noting that Google Chrome's engine, Chromium is now powering a canary build of Microsoft Edge and is already powering Opera, this means that websites that are compatible with Chrome will be equally compatible with these browsers.  
+
+\section{Code}
+
+Testing code is a way of making sure that the end product that is created is robust to future change. Code testing can come in many forms but this project has focused on \textbf{Unit Testing}.
+
+\subsection{Unit Testing}
+
+Unit testing is the method of testing a component of the system as though it is a completely isolated module a benefit of this is that when writing unit tests themselves it can reveal that code that was previously thought to be modular is not. 
+
+Testing complex functionality is a high priority when thinking about writing unit tests, the WebSocket receiver functionality of the frontend is a good nomination for a test suite as it has many different outputs depending on the WebSocket event received. It also opens up the idea of Test Driven Development because if a new feature is being developed that would involve a new WebSocket event to be received, the event can be mocked (shown in Snippet \ref{snip:socket-test}) and the expected output can be defined. From this starting point the test will fail and the functionality can be added to the \texttt{switch statement} so that the test passes.
+
+\begin{sexylisting}[label=snip:socket-test]{Test for Receiving Container.Start Message}
+const MOCK_STATE = {};
+
+test('Container Start', () => {
+    const MOCK_EVENT = makeEvent(
+        MessageTypes.CONTAINER_START, {
+            name: 'Tester',
+            info: { Config: { Hostname: 'Tester' } }
+        });
+
+    expect(handleMessage(MOCK_EVENT, MOCK_STATE))
+        .toMatchSnapshot();
+
+    const TEMP_STATE = { containerName: '', id: '' };
+
+    expect(handleMessage(MOCK_EVENT, TEMP_STATE))
+        .toMatchSnapshot();
+});
+\end{sexylisting}
+
+This test is checking to see if, when a mock event is passed to the function that handles the message, the output is correct and matches the previous snapshot. If the output changes (because the function changes) then this test will fail.
+
+The backend of the application can be tested in a very similar way by mocking inputs and snapshotting outputs, functions can be tested in a way that means they are robust to future change in the codebase so any changes that are unexpected will cause the test to fails.
+
+\section{Performance}
+
+% Lighthouse tests blah blah blah 
+
+\section{Security}
+
+% Pen testing
+
+Blah blah unix permissions stuff blah blah namespaces blah blah cgroups blah blah kernel blah blah gvisor etc etc
+
 \pagebreak

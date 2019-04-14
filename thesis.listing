@@ -1,10 +1,17 @@
-    {...}
-    this.socket.onmessage = (event) => {
-        const { type, data } = JSON.parse(event.data);
+const MOCK_STATE = {};
 
-        switch (type) {
-            case MessageTypes.CONTAINER_START:
-                console.log('Container Started');
-                {...}
-        {...}
-    {...}
+test('Container Start', () => {
+    const MOCK_EVENT = makeEvent(
+        MessageTypes.CONTAINER_START, {
+            name: 'Tester',
+            info: { Config: { Hostname: 'Tester' } }
+        });
+
+    expect(handleMessage(MOCK_EVENT, MOCK_STATE))
+        .toMatchSnapshot();
+
+    const TEMP_STATE = { containerName: '', id: '' };
+
+    expect(handleMessage(MOCK_EVENT, TEMP_STATE))
+        .toMatchSnapshot();
+});

@@ -1943,6 +1943,7 @@
     <bcf:citekey order="17">expressws</bcf:citekey>
     <bcf:citekey order="18">typescript</bcf:citekey>
     <bcf:citekey order="19">styledcomp</bcf:citekey>
+    <bcf:citekey order="20">jest</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">

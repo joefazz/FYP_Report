@@ -19,7 +19,7 @@ The database is a straightforward MongoDB \cite{mongo} implementation with two c
 
 For the Node server to be able to make database calls the MongoDB API must be queried against, this is done by using the \textbf{mongoose} package \cite{mongoose}.
 
-\subsection{REST API}
+\subsection{REST API} \label{impl-rest}
 
 To provide an API that a frontend can interact with to retrieve information from the database, a REST API is created with the Express framework \cite{express}. Creating an API endpoint with Express is a simple process that roughly follows the formula of:
 
@@ -73,7 +73,7 @@ server.post("/create", (req: Request, res: Response) => {
 });
 \end{sexylisting}
 
-\subsection{Docker Integration}
+\subsection{Docker Integration} \label{impl-docker}
 
 For the backend to have the ability to create and link Docker containers to a user running the application on the frontend it needs to be able to interact with the \textit{Docker Socket}. Every machine with an installation of the Docker Engine has a Docker Socket which is what the Docker CLI uses when commands are run against it.
 
@@ -88,20 +88,11 @@ const options = { socketPath: SOCKET_PATH };
 export default new Docker(options);
 \end{sexylisting}
 
-\subsubsection{Provisioning a User Allocated Container}
+\subsubsection{Provisioning a User Allocated Container} \label{impl-alloc}
 
 Creating a container for every user that connects to the system requires the concept of a \textit{basic image}. This image is a Dockerfile which specifies the defaults for all user's environments. The Dockerfile is responsible for configuring the environment so that it is secure and pre-installed with all the tools that the user might need.
 
-The basic image, comes with the following software pre-installed: 
-
-\begin{itemize}
-    \item Alpine Linux Distro
-    \item Bash
-    \item Python3
-    \item Node.js
-    \item GCC
-    \item Git
-\end{itemize}
+The basic image, comes with the following software pre-installed: \textbf{Alpine Linux Distro}, \textbf{Bash}, \textbf{Python3}, \textbf{Node.js}, \textbf{GCC} and \textbf{Git}.
 
 Alpine Linux is the distribution that the base image of the container which is based on Ubuntu. Bash is a very common shell which is a better default than the standard \textit{ash} or \textit{sh} which are the shells that come with the Alpine image. Bash is important for the code execution aspect of the system which is explained further in \textit{Executing Code - \ref{imp-execode}}. Python, Node and GCC are chosen as those are the 3 runtimes that are supported by the system. Git is installed so if the user writes something that they want to be able to save they can use Git through the command line.
 
@@ -126,7 +117,7 @@ const container = await docker.createContainer({
 
 This tells the API to create a container using the image with the label "basic" which is what the Dockerfile described above has the label of. The various \texttt{AttachX} properties tell the container if they should allow other processes to attach to this containers Standard Input/Output/Error which, as this container is emulated on the front end is required to be \texttt{true}. Tty refers to an old way of referring to the interface for a terminal. Without this option set to true it won't display in a way that looks like a traditional command line environment. Cmd is the command that the container should run once it's been created, in this case it needs to run bash. OpenStdin allows standard input to the TTY. StdinOnce will close the STDIN connection if an attached user disconnects, this needs to be off for this system as going between an exercise and a container will detach in the way that satisfies this requirement and it needs to be able to reconnect to the STDIN. The name property is simply the labelled name of the container which is displayed to the user when they connect.
 
-\subsubsection{Provisioning an Exercise Container}
+\subsubsection{Provisioning an Exercise Container} \label{impl-exer-cont}
 
 Provisioning the exercise container is more or less the same as the user's allocated container but it has to pause the allocated container so that resources aren't being wasted and then create the container for the exercise.
 
@@ -174,7 +165,7 @@ export function getCodeExecutionCommand(filename, repl) {
 
 This snippet works along the same lines as the previous however more steps are involved for the C compilation step as an output file is generated which has to be executed.
 
-\subsection{WebSockets - Backend}
+\subsection{WebSockets - Backend} \label{impl-ws-backend}
 
 As mentioned in the Solution Approach (Section \ref{solapp-rtc}) the standard WebSocket client that is available as a browser API and on the backend a middleware package \texttt{express-ws} \cite{expressws} is being used to allow connections to the server using the WebSocket protocol.
 
@@ -288,13 +279,13 @@ The general approach for developing the frontend of the project is stated in Cha
 
 The frontend consists of 4 pages or screens all of which have varying degrees of functionality and interaction with both the backend and the user.
 
-\subsection{WebSockets - Frontend}
+\subsection{WebSockets - Frontend} \label{impl-ws-frontend}
 
 The WebSocket configuration is fairly similar to the backend. The browser has the WebSocket object in it's global scope so there is no need to import a package like had to be done for the backend.
 
 All the configuration for setting up the WebSocket connection and handling events is done in the \texttt{componentDidMount()} lifecycle of the entire application.
 
-\subsubsection{Starting the Connection}
+\subsubsection{Starting the Connection} \label{impl-ws-fconnect}
 
 \begin{sexylisting}{WS connection setup}
     componentDidMount() {
@@ -310,7 +301,7 @@ All the configuration for setting up the WebSocket connection and handling event
 
 This snippet is creating a new WebSocket object and passing the URL of the path that the connection will be between. In this case it's the root WebSocket path that is shown in \ref{impl-ws-config} which initiates the container for the user.
 
-\subsubsection{Receiving Messages}
+\subsubsection{Receiving Messages} \label{impl-ws-fmsgrcv}
 
 As the structure of messages is predictable (see \ref{impl-ws-msg-struct}) the same approach to deal with messages is used on the client-side as the server-side.
 
@@ -331,13 +322,13 @@ Here the WebSocket is registering an \texttt{Event Listener} which performs the 
 
 After a message comes through, depending on it's content it will modify the global state of the application so that all screens are able to inspect the current state of the socket and any response that might be relevant to the functionality of that particular page. This global state is created with the built in Context API from React.
 
-\subsubsection{Sending Messages}
+\subsubsection{Sending Messages} \label{impl-ws-fmsgsnd}
 
 Sending messages is performed the exact same way as it is from the backend, shown in Snippet \ref{code:ws-msg}
 
 \pagebreak
 
-\subsection{Home Page}
+\subsection{Home Page} \label{impl-home-page}
 
 The home page of the web app has the goal of showing users all the functionality of the system.
 
@@ -359,7 +350,7 @@ At the top of the page there is a standard navigation bar which provides access 
 
 The home page also includes the Monaco code editor and a toggle for selecting a language so the whole functionality of the site can be sampled on this page. Picking any of the languages switches to the corresponding language and pressing \textit{Run} will execute the code and display the response in the pink output box below it which also displays the name of the container.
 
-\subsection{Sandbox Page}
+\subsection{Sandbox Page} \label{impl-sandbox-page}
 
 \begin{figure}[h!]
     \centering
@@ -373,7 +364,7 @@ The sandbox page of the application has a simple file browser on the left which 
 The \texttt{Save} button will save the code to the container file that is currently open for it to be executed in the terminal emulator.
 
 
-\subsection{Exercises Page}
+\subsection{Exercises Page} \label{impl-exercises-page}
 
 \begin{figure}[h!]
     \centering
@@ -384,7 +375,7 @@ The \texttt{Save} button will save the code to the container file that is curren
 
 The exercises page has a selection of available exercises on the left that will open the corresponding exercise screen. It also contains a form which users can create their own exercise in order to share with others or help mentor someone new to coding. Up to 15 separate activities can be made for any exercise.
 
-\subsection{Exercise Page}
+\subsection{Exercise Page} \label{impl-exercise-page}
 
 \begin{figure}[h!]
 \centering
@@ -401,11 +392,11 @@ When this execution finishes, the connection is re-established with the normal R
 
 The \textit{Connection Status} in the nav bar has changed to a yellow status, this is due to the user's main container being paused while they are interacting with an exercise container. When the user navigates away from this exercise their main container is resumed and the exercise container is destroyed. 
 
-\section{ContainMENT - Container Management}
+\section{ContainMENT - Container Management} \label{impl-containment}
 
 Although containers are light weight and not very resource intensive, creating containers on demand as users make a connection with the site will lead a fairly significant scaling issue if there is no management of them in place.
 
-Currently there is only one ContainMENT tool in place which is \textbf{Ahab} (see \ref{impl-ahab}) but plans for additional tools are stated in Chapter \ref{conclusion}
+Currently there is only one ContainMENT tool in place which is \textbf{Ahab} (see \ref{impl-ahab}) but plans for additional tools are stated in Chapter \ref{conclusion}.
 
 \subsection{Ahab} \label{impl-ahab}
 
