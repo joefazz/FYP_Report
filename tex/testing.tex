@@ -13,6 +13,32 @@ Testing of the actual code that composes the system was done primarily with the 
 
 % go through all the functionality of the site and tabulate the results
 
+Usability testing is the process of making sure the features that have been implemented are all working by going through them one by one and assessing their performance and quality.
+
+\begin{table}[h]
+    \centering
+    \begin{tabulary}{\textwidth}{l|C}
+        \textbf{Feature} & \textbf{Usability Summary}\\
+        \hline
+        Monaco Text Editor & Feature works fully with syntax colouring, auto complete with JavaScript but not other languages\\
+        \hline
+        Code Execution & Fully functioning in all areas that are applicable\\
+        \hline
+        Terminal Emulator & Performs task well with input and output link issue with small level of latency where the messages are being buffered to only send every 10ms, leads to skipping some characters\\
+        \hline
+        File browsing & Opening a file and saving to it works, issue where folders aren't displayed correctly\\
+        \hline
+        Doing an exercise & Works, would be good for code validation to make sure the exercise output is correct but functionally works well\\
+        \hline
+        Creating an exercise & Works well, currently C exercises can't be made due to the lack of C REPL available\\
+        \hline
+        Sandbox Page & Would be good to have a run button like in the exercise page, also an issue with resizing windows going off the page\\
+        \hline
+        Home Page & Would be nice if any code written in the windows was reloaded when the tab to switch language is pressed rather than just putting the default comment in.\\
+    \end{tabulary}
+\end{table}
+
+
 % Code editing experience - v good
 
 % Terminal emulator - some latency but not a deal breaker
@@ -41,21 +67,28 @@ Although web applications don't have to worry about the metal of the system that
 
 \begin{table}[h]
     \centering
-    \begin{tabular}{l|l|l}
+    \begin{tabulary}{\textwidth}{l|C|c}
         \textbf{Browser} & \textbf{UI Compatibility} & \textbf{Functionality Compatibility} \\
         \hline
-        \makecell[l]{Google Chrome} & \makecell{Fully Compatible} & \makecell{Fully Compatible} \\
+        Google Chrome & Fully compatible & Fully compatible \\
         \hline
-        \makecell[l]{Mozilla Firefox} & \makecell{Mostly compatible, only\\ noticable glitch is the page gains\\ padding when the Monaco\\auto complete appears} & \makecell{Fully Compatible} \\
+        Mozilla Firefox & Mostly compatible, only noticeable glitch is the page gains padding when the Monaco auto complete appears & Fully compatible \\
         \hline
-        \makecell[l]{Microsoft Edge} & \makecell{Partially compatible, strange\\squashing of nav bar component} & \makecell{Fully Compatible} \\
+        Microsoft Edge & Partially compatible, strange squashing of nav bar component & Fully compatible \\
         \hline
-        \makecell[l]{Apple Safari} & \makecell{Fully Compatible} & \makecell{Fully Compatible} \\
-        
-    \end{tabular}
+        Apple Safari & Mostly compatible, some scaling issues with text & Fully compatible \\
+        \hline
+        Internet Explorer 11 & Not compatible, the web app uses CSS Grid for page layout which is not supported in IE 11 & Un-testable
+    \end{tabulary}
 \end{table}
 
 It's worth noting that Google Chrome's engine, Chromium is now powering a canary build of Microsoft Edge and is already powering Opera, this means that websites that are compatible with Chrome will be equally compatible with these browsers.  
+
+Internet Explorer 11, while having the second highest market share of browsers \cite{browser-stats} is still only 9.83\% with Firefox close behind at 9.62\%. Overall coverage of the application is 84.83\% of all browsers which is a significant volume of users.
+
+Adding support for IE 11 is an option for the future however, considering Microsoft are pushing their Edge browser over IE it isn't a high priority. Most of the usage will be front enterprise machines which can't run latest versions of OS's or web browsers due to security concerns.
+
+This compatibility test didn't test mobile devices as they aren't supported by the Monaco editor so for now a landing page is rendered saying that mobile support is coming.
 
 \section{Code}
 
@@ -94,10 +127,42 @@ The backend of the application can be tested in a very similar way by mocking in
 \section{Performance}
 
 % Lighthouse tests blah blah blah 
+In order to test performance of the system, there are two main components to test. The client-side and the server-side.
+
+\subsection{Lighthouse Audits}
+
+Built into Google Chrome is a website auditing tool called \textit{Lighthouse} \cite{google-lighthouse} which can measure many different aspects of web applications such as their performance, search engine optimisation, accessibility, and best practices. 
+
+\textbf{Performance} is focused on things like the first meaningful paint to the screen and how quickly the web page is able to be interacted with. 
+
+\textbf{Search Engine Optimisation (SEO)} is simulating how well a web crawler can crawl through the page and generate a site map so the pages are visible on a search engine. 
+
+\textbf{Accessibility} measures important aspects such as if screen readers can interpret the elements on the page and if any colours aren't contrasting enough for those hard of sight to interpret the difference between.
+
+\textbf{Best Practices} compares the website against industry standard on how to create a good modern website, this is a slightly more abstract concept to measure than the other sections however it is something Google consider important enough to include in their auditing tool. 
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{res/lighthouse_audit_deployed.png}
+    \caption{Lighthouse audit of deployed application}
+    \label{deployed-lighthouse}
+\end{figure}
+
+The figure above shows some excellent results for the different measurements. Performance being 100 is particularly notable as most of Google's own products don't meet that high. This performance result is due to how Next.js packages the application for deployment which converts all of the React layout code into normal HTML, CSS which is very fast to render. It also isolates each page into what they call a \textit{lambda} function which means that the pages aren't always running and instead will be loaded on demand. This means there's no resource wastage from a server running 24 hours a day. The different metrics are shown at the bottom of the figure with extremely fast response times. It is worth mentioning again that this is a deployed system and is not running locally or hosted on the same LAN.
+
+The accessibility score is only 85 as the code editor's theme has the green of the comment which has low contrast compared to the dark background, there is also an issue in the bullet point list of site features as screen readers will announce the globe images when really they shouldn't be noted. This can be fixed with an \texttt{aria-hidden} attribute on the element which will tell screen readers to ignore it. 
+
+The best practices score is due to errors being logged in the console. As only the frontend is currently deployed, the WebSocket fails to connect which results in errors logged to the console. This will be resolved once the backend of the application is deployed. 
+
+The SEO score is due to there not being a meta description of the website in the \texttt{<head>} which is what provides search engines with their summary of the website. This is very easy to resolve. 
+
+\subsection{Backend Perf}
 
 \section{Security}
 
 % Pen testing
+
+Security is a big potential gap in this system, as mentioned in 
 
 Blah blah unix permissions stuff blah blah namespaces blah blah cgroups blah blah kernel blah blah gvisor etc etc
 

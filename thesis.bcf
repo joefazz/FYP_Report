@@ -1944,6 +1944,8 @@
     <bcf:citekey order="18">typescript</bcf:citekey>
     <bcf:citekey order="19">styledcomp</bcf:citekey>
     <bcf:citekey order="20">jest</bcf:citekey>
+    <bcf:citekey order="21">browser-stats</bcf:citekey>
+    <bcf:citekey order="22">google-lighthouse</bcf:citekey>
   </bcf:section>
   <!-- SORTING TEMPLATES -->
   <bcf:sortingtemplate name="none">
