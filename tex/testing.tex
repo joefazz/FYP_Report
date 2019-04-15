@@ -127,7 +127,7 @@ The backend of the application can be tested in a very similar way by mocking in
 \section{Performance}
 
 % Lighthouse tests blah blah blah 
-In order to test performance of the system, there are two main components to test. The client-side and the server-side.
+Performance testing is making sure that the system is working in an acceptably fast way. Measuring the performance of the front end is done by using the built in Lighthouse tool in Google Chrome and for the backend, as it is famously difficult to measure Docker performance \cite{docker-perf} the measuring will be done locally with the Docker CLI \texttt{docker stats} command which provides real time information on the consumption of the containers that are running.
 
 \subsection{Lighthouse Audits}
 
@@ -156,14 +156,70 @@ The best practices score is due to errors being logged in the console. As only t
 
 The SEO score is due to there not being a meta description of the website in the \texttt{<head>} which is what provides search engines with their summary of the website. This is very easy to resolve. 
 
-\subsection{Backend Perf}
+\subsection{Docker Stats}
+
+A number of tests were performed while visually observing the running of the \texttt{docker stats} command which provides real time usage on CPU, memory, I/O and more. It is worth noting before observing the results that while the usage can say 0\% that does not mean that 0\% of the CPU is being occupied by the container as there is a base level allocation of usage that, while may not be consumed, is still unavailable to other processes. This is mentioned in \cite{docker-perf}.
+
+All tests were done 5 times and an average was taken.
+
+%TODO: put processing power of CPU here somewhere
+
+\begin{table}[h!]
+    \centering
+    \begin{tabulary}{\textwidth}{L|C|C}
+        \textbf{Operation} & \textbf{CPU Usage (\%)} & \textbf{RAM Usage (MiB)}\\
+        \hline
+        Server Started & Server Idling at 0.1 & Server Idling at 195.7\\
+        \hline
+        Container Started & No change in server. New container 'Modi' idling at 0. & Server idling at 196.3. Modi idling at 1.234\\
+        \hline
+        Counting to 50 million & Server jumps to 0.66. Modi peaks at 55. & No change in server. Modi peaked at 2.55. Modi idles higher post execution at 2.023\\
+        \hline
+        Connecting the Terminal & Server jumps to 1. No change in Modi. & No changes in either container.\\
+        \hline
+        Typing in the Terminal & Server peaks at 3.88. Modi peaks at 0.35. & No changes in either container.\\
+        \hline
+        Opening a file & Server peaks at 0.7. Modi peaks at 4.3. & No changes in either container.\\
+        \hline
+        Opening a Python Exercise & Server doesn't change. Modi pauses and idles at 0. Python container idles at 0. & No change in server memory use. Modi idles at 2.023 Python container idles at 5.625.\\
+        \hline
+        Counting to 50 million in exercise & Server doesn't change. Python peaks at 50. & Server doesn't change. Python peaks at 8.\\
+        \hline
+        Opening a new tab & Server behaves the same as opening container. New container idles with 0. & No change to server. Modi remains idling at 2.023. New container idles at 0.956.
+    \end{tabulary}
+\end{table}
+
+\subsubsection{Observations}
+
+Node.js idles with relatively high memory consumption but incredibly low CPU usage. 
+
+Containers will take up as much CPU as they can when they are doing intense computation.
+
+Memory consumption for containers never goes higher than 8MiB at peak and never idles higher than 5.625MiB.
+
+Usage scales dynamically in all aspects.
+
+Biggest potential problems is will many containers trying to do intense computation at once.
 
 \section{Security}
 
 % Pen testing
 
-Security is a big potential gap in this system, as mentioned in 
+Security is a big concern with a system where users have the ability to not only execute code on a remote machine but also have access to the shell of a container that will be deployed to the same space that the entire backend will be. Despite containers providing huge advantages speed/size wise over hypervisor powered virtual machines, from a security perspective there is a large problem. The containers are running on the kernel of the machine that the container provisioning engine is running on so if a user is able to exploit a kernel bug, it means that they can break out of the container and start changing things in the shell of the machine hosting the entire system. This would be terrible if the attacker has malicious intent.
 
-Blah blah unix permissions stuff blah blah namespaces blah blah cgroups blah blah kernel blah blah gvisor etc etc
+A lot of kernel exploits are only possible with root access so the first step to securing the containers is making sure that the user account that the users are logged into is not the normal docker root user. This is briefly discussed in Section \ref{impl-alloc} with the Dockerfile that creates the \textit{damien} user which is what users are occupying while they're on the system. Inside this normal user account access to sensitive information is well secured, a lot of commands that can be used maliciously are locked, the ability to install more software (like cracking tools and fingerprinting tools) is not available. One potential issue is that some of the default binaries installed which are usable, even though they aren't meant for malicious purposes could be exploited to do something malicious. The \texttt{wget} package is an example of this as on the surface it's a tool for downloading a web page but it could be used to download scripts online and then so long as they're in the users home folder they will be able to execute them. 
+
+More tools that could help prevent exploitation of the service that this project is providing would be a long running watcher which checks to see that there aren't any containers operating at 100\% CPU usage for too long. This type of usage could indicate that someone is trying to break the containers/the overall system. Usage limits and tracking would aid in detecting this behaviour and providing a warning to users that this type of activity could result in being black listed from the system.
+
+Preventing security issues is an endless task however a new tool from Google is proving effective at mitigating the risk of using containers as remote environments. gVisor \cite{gvisor} is compliant with the Open Container Initiative and works as a drop in runtime for the \texttt{runc} runtime that Docker uses by default and provides a small layer of security on top similar to how a traditional hypervisor provides security.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{res/gvisor.PNG}
+    \caption{gVisor Runtime Architecture \cite{gvisor-info}}
+    \label{fig:gvisor}
+\end{figure}
+
+Shown in the article \cite{gvisor-info} simply replacing the \texttt{runc} runtime with the gVisor based \texttt{runsc} means that a specific kernel exploit no longer works in containers. This type of technology is inevitable as more huge industry giants adopt containerisation and provides an optimistic view of how using containers can be both well performing and secure.
 
 \pagebreak
