@@ -79,7 +79,7 @@
 % --------------------------------------------------
 % Thesis
 % --------------------------------------------------
-% \input{tex/introduction.tex}
+\input{tex/introduction.tex}
 
 \input{tex/problem_definition.tex}
 
@@ -91,16 +91,14 @@
 
 \input{tex/testing.tex}
 
-% TODO: table annotations
-
 % % --------------------------------------------------
 % % Discussion and Reflection ???
 % % --------------------------------------------------
-\chapter{Discussion: Contribution and Reflection}
+\chapter{Discussion}
 
 % The discussion section follows on naturally from the results presented in the previous section. The discussion  is  usually  substantial  and  is  where  you  discuss  your  test  results  in  detail,  and  their implications, and also potentially make links to relevant previous work. Analyse the success of your solution.  Discuss  limitations  of  this  project,  which  will  help when  you  introduce  your  Future Improvements in the Conclusion section. Reflect also your learning experience, e.g. what you will do differently if you would do this project again.  
 
-
+\section{Observations}
 
 \pagebreak
 
@@ -128,21 +126,28 @@ A lot of the software used to implement this system is open source software mean
 
 % Briefly restate the project objectives and then make straightforward conclusions about your project work and results. What have been the key outcomes? You can suggest future work that logically stems from your work and refers to the limitations of your own work in the Discussion section. 
 
-This project has been an exercise in building a fullstack web application which attempts to create an experience that encourages users to experiment with programming in their own personal environment which closely emulates the experience they would get locally. It successfully incorporates industry standard tooling and familiar UI in a way that means users won't be challenged going from this system to a full integrated developer environment.
+This project has been an exercise in building a replacement developer environment that could be used by developers old and new in order to learn new skills or hone existing ones. It examined many different technologies that could be used to create the solution which fulfilled the requirements laid out in the Problem Statement \ref{chapter:probart}. It uses modern technologies such as WebSockets and containers to close the gap between an online experience and a local one as much as possible these technologies are all implemented in a way that focuses on the user's experience of using the system. In order to help bridge the gap it also successfully incorporates industry standard tooling with a familiar UI in a way that means users won't be challenged going from this system to a full integrated developer environment.
 
-The resulting system has achieved these base objectives that were set out and the results show that it has been achieved in way that performs well when measured against modern standards and practices.
+The resulting system has achieved these base objectives that were set out and the results show that it has been achieved in way that performs well when measured against modern standards and practices. The output of the project has been thoroughly tested and inspected which will both help the project in it's current form and in future iterations in terms of calculating the correct amount of resources to provide a container with and additional security layers that can be added.
 
 There is a lot of space in the future of this project to grow it out into a full product. One of the first priorities for the future would be to implement the gVisor sandbox runtime for the additional security benefits it provides. Deploying the application on a permanent basis would also be a priority but further testing would be required so that the correct configuration for the host of the server could be calculated for the lowest cost. A final future feature for the system in general would be implementing container snapshots and user accounts so that it's possible to save the state of a user's allocated container and come back to it, this would mean that it is escalated to a proper environment that a user can make personal and use repeatedly. 
 
 \pagebreak
 
+\chapter{Reflection}
+
+If I were to do the project again I would've done more research before starting the coding section of my project as when the literature review was being performed some initial probing into code had begun without fully realising the required scope of the system which resulted in some rewrites of sections having to be done.
+
+Due to time constraints it became unrealistic to expect to implement some industry approved monitoring methods on the container especially for things like resource consumption and user activity. Now knowing what I know I think this is something I would've prioritised higher as it would've proved helpful for the testing section of the report and any observations made on the data would be more justifiable.
+
+Overall it was a highly educational and rewarding experience to create the kind of software that I would've loved to exist when I was learning programming. Researching these technologies that I'd only heard of by name was an enlightening process as well which I doubt I would've been motivated to do myself had the need to write this report not been present.
 
 % --------------------------------------------------
 % Bibliography & Appendices
 % --------------------------------------------------
 \printbibliography
-\pagebreak
 
+\pagebreak
 
 
 % \input{tex/appendices.tex}

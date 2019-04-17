@@ -12,15 +12,17 @@ This chapter examines various literature around relevant subjects to the project
 
 Real-Time Communication is an important research topic for this project as in order to create an environment for users that feels as close to a local experience as possible, the requirement for fast feedback is essential.
 
-An experiment was done in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick \cite{websocket}. This experiment compared the different standard HTTP methods of implementing Real-Time Communication compared to the new (at the time) technology of WebSockets which are designed to create a fully duplexed bidirectional data-flow.
+An experiment was done in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick \cite{websocket}. This experiment compared the different standard HTTP methods of implementing Real-Time Communication against the new (at the time) technology of WebSockets which are designed to create a fully duplexed bidirectional data-flow.
+
+\subsection{HTTP Polling}
 
 \textbf{HTTP polling} is an attempt to solve the real-time issue by repeatedly making a request to a web server at a pre determined time interval to check to see if there are any messages waiting to be read.  \textbf{HTTP long-polling} is another solution that uses the HTTP protocol but reduces the number of wasteful requests by having the server intelligently not respond to the request if there is no information available and hang until a timeout or information becomes available. Both of these solutions are inadaquate for a responsive system however because the HTTP protocol is still built on top of a system not designed for real-time, fully duplexed communication channel. HTTP relies on a standard 'Request-Response' model which is only half duplex so polling was only a solution that worked for systems that were reliably sending data at a steady rate such as sensors that are being queried for an API.
+
+\subsection{WebSockets}
 
 A modern solution to this is the \textbf{WebSocket} protocol proposed in RFC 6455 \cite{wsrfc} which aims to reduce latency by a factor of 3 compared to HTTP in the real-time communication aspect. It is a fully duplexed, bidirectional communication channel that provides an efficient method of communicating between several different clients using a persistent connection between the client and the server. A client may connect to a websocket endpoint on the server, send messages to it, and the server may broadcast messages back to just that client or to every client connected. Due to this behaviour it is very popular for creating text based chat communication systems.
 
 WebSockets work by utilising a persistent TCP connection where messages can be sent back and forth without there having to be a new connection made every time. This behaviour is possible in HTTP since HTTP 1.1 however, WebSockets do not adhere to the standard, 'Request-Response' cycle that a HTTP request utilises. Any client connected to the socket is capable of broadcasting a message at any time. HTTP persistent connections also still suffer from latency due to the effort the protocol makes to control congestion \cite{httpvsws}. WebSockets take the concept further by making it simple to embed data with each request in the form of a string in the form of a JSON schema. This makes it ideal for the transfer of small chunks of text where only text is the required form of the response. WebSockets are not appropriate for downloading resources or assets such as images.
-
-Another new approach of RTC on the web has been developed by Google in collaboration with other browser vendors called \textbf{WebRTC} \cite{webrtc}. This technology is focused on streaming audio and video between different clients on the web. This new technology is aiming to be the replacement for the browser plugins that were necessary in order to use P2P video/voice chat software such as \textit{Skype, Facebook Messenger, Google Hangouts, etcetra} \cite{webrtc}. WebRTC is more appropriate for applications that need a streaming based connection as it's latency is even lower than WebSockets due to it utilising the UDP protocol which has much less overhead compared to the TCP based connection of WebSockets \cite{udpvstcp}. WebRTC would not be appropriate for the use case of WebSockets as when transferring informational data between clients, such as a chat application, it is important to make sure that the data is being received in the correct order whereas UDP is less concerned so long as enough packets get transferred to create a stable audio/video connection.
 
 \begin{figure}[h!]
     \centering
@@ -28,6 +30,11 @@ Another new approach of RTC on the web has been developed by Google in collabora
     \caption{Illustration of WebSocket connection \cite{websocket-img}}
     \label{}
 \end{figure}
+
+\subsection{Web RTC}
+
+Another new approach of RTC on the web has been developed by Google in collaboration with other browser vendors called \textbf{WebRTC} \cite{webrtc}. This technology is focused on streaming audio and video between different clients on the web. This new technology is aiming to be the replacement for the browser plugins that were necessary in order to use P2P video/voice chat software such as \textit{Skype, Facebook Messenger, Google Hangouts, etcetra} \cite{webrtc}. WebRTC is more appropriate for applications that need a streaming based connection as it's latency is even lower than WebSockets due to it utilising the UDP protocol which has much less overhead compared to the TCP based connection of WebSockets \cite{udpvstcp}. WebRTC would not be appropriate for the use case of WebSockets as when transferring informational data between clients, such as a chat application, it is important to make sure that the data is being received in the correct order whereas UDP is less concerned so long as enough packets get transferred to create a stable audio/video connection.
+
 
 \section{Online Developer Environments} \label{lit-ode}
 
@@ -72,7 +79,7 @@ In order to provide as close to local experience as possible to the users of the
 
 \subsection{Virtual Machines}
 
-Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} (VM software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are, a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
+Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} (VM) software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are, a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
 
 In the enterprise world, Virtual Machines are being used to host their customers applications in a full Platform-as-a-Service (PaaS) solution so customers no longer have to worry about hosting their own web servers or other online services.
 
@@ -92,7 +99,7 @@ As Containers traditionally don't utilise a hypervisor the biggest difference be
 \end{figure}
 
 Due to their performance benefits containers have become popular options for PaaS software. A paper was written comparing the benefits of a fully virtualised environment against a container based solution \cite{contsvsvirt}. It concluded that containers have an inherent advantage over VMs due to the performance benefits and the quick start up time of them. It also mentions that few PaaS vendors are using containers for their systems so far as they are too new of a technology. It is worth nothing that the report was published in 2014 however and since then uptake will have increased.
-\pagebreak
+
 \section{Container Providers}
 
 As containers are a more modern innovation than hypervisors, recently there has been a wave of different technologies that attempt to make simple containers in varying ways.
@@ -108,7 +115,6 @@ As briefly mentioned above, \textbf{Linux Containers} or \textbf{LXC} are the fo
     \item Isolates all files on the container from the Host by using chroot
 \end{itemize}
 
-%TODO: explain cgroups and namespaces
 The features listed above are all features standard in the Linux kernel. \texttt{cgroups} \cite{cgroups-man} or control groups are a feature that is able to isolate and allocate resources from the machine to each individual process. 
 
 \texttt{namespaces} \cite{namespaces-man} is another key feature of the kernel which LXC relies on in order to provide isolation to each container. The purpose of namespaces is to wrap a process or a group of processes in an isolated instance of the global resource, changes of global resources are to other processes that are a member of a namespace but aren't visible to other namespaces.
