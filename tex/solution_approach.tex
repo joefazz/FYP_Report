@@ -9,9 +9,11 @@ In order to provide users with the most 'local' experience as possible on a remo
 
 There are many different container solutions available currently, many have similar roots such as a backbone of using LXC but they build on top of those foundations in varying ways. Some of these ways are documented in the paper which was discussed in Section \ref{lit-containers} \cite{contsvsvirt}. This paper performed a comparison of the various different container technologies and stacked them against each other on key implementation features such as performance and security.
 
-The decision to not research Virtual Machines as a potential solution for the system is due to the project not requiring the utility of a hypervisor. As almost all developer tools are freely available through most Linux distributions. This means that there are few to no downsides of using a container based solution versus a fully blown Virtual Machine set up and many benefits.
+The decision to not research Virtual Machines as a potential solution for the system is due to the lightweight nature of the system that is required. Container technology is also more freely accessible compared to virtual machines software which is often licensed. This means that there are few to no downsides of using a container based solution versus a fully blown Virtual Machine set up and many benefits.
 
 \subsection{Container Providers} 
+
+The main container providers that can be applied to the project are Docker and OpenVZ as they both provide a good foundation on top of the base LXC technology. The ability to save containers at checkpoints is useful in relation to the project as any information created on the container can be saved and referred to later. While this feature is not in the proposed scope of the project it is important to consider feature development features and technology choices at an early stage can influence how easy or difficult implementing future features will be.
 
 A big limitation of OpenVZ is that it can't run on the standard Linux kernel so it is not a very viable solution for this project as the aim to to deploy the system and requiring a modified kernel will add complexity.
 
@@ -90,7 +92,7 @@ For online emulation of a terminal/command line the most popular solution is \te
 
 With the solutions established above it is now appropriate to evaluate the options when it comes to how to build the whole user facing side of the system.
 
-As the developer has the most experience building websites using the \texttt{React} library (https://reactjs.org/) to help with creating reactive, data driven, single page web applications, that is the overarching technology that will be used to build the solution.
+As the developer has the most experience building websites using the \texttt{React} library \cite{react} to help with creating reactive, data driven, single page web applications, that is the overarching technology that will be used to build the solution.
 
 Within the React ecosystem however, there is a number of options about how to manage certain essential features such as page routing and how to style components in a way that fits into the React methodology.
 
@@ -133,7 +135,7 @@ As syntax colouring has been described as a key feature there isn't much of a ch
 
 Trying to build a system that provides users with an environment where they feel as though there's not a high barrier to entry involves a design process which has to ensure that things are arranged in as friendly a way as possible.
 
-Some sketches were done in order to try to narrow down what kind of design language should be used to give the users a sense of friendless versus the more stark, professional look that some developer focused websites aim for \texttt{StackOverflow dot com}. Based on these general requirements the following low fidelity prototypes were created presenting different ways that information could be displayed for users.
+Some sketches were done in order to try to narrow down what kind of design language should be used to give the users a sense of friendless versus the more stark, professional look that some developer focused websites aim for \cite{stackoverflow}. Based on these general requirements the following low fidelity prototypes were created presenting different ways that information could be displayed for users.
 
 \begin{figure}[!htb]
   \minipage{0.32\textwidth}
@@ -178,6 +180,7 @@ No specific font styles were decided upon for this prototype.
 
 Based off of the research conducted in Chapter \ref{lit} and the potential woes of implementing some of the solutions proposed in this chapter. The current solution approach for creating a full implementation of the system is to have a Next.js frontend with a backend that uses Docker containers in order to implement virtual environments for users. The frontend will make use of the Monaco code editor and the Xterm terminal emulator. Communication between the containers and the frontend will be done with the WebSockets RTC method.
 
+\textbf{A DIAGRAM WILL GO HERE}
 % TODO: put a diagram of the overall structure here (low level)
 
 % TODO: talk about backend stuff here as well :(

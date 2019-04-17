@@ -11,8 +11,6 @@ Testing of the actual code that composes the system was done primarily with the 
 
 \section{Usability Testing}
 
-% go through all the functionality of the site and tabulate the results
-
 Usability testing is the process of making sure the features that have been implemented are all working by going through them one by one and assessing their performance and quality.
 
 \begin{table}[h]
@@ -36,6 +34,7 @@ Usability testing is the process of making sure the features that have been impl
         \hline
         Home Page & Would be nice if any code written in the windows was reloaded when the tab to switch language is pressed rather than just putting the default comment in.\\
     \end{tabulary}
+    \caption{Usability testing of system}
 \end{table}
 
 
@@ -60,8 +59,6 @@ Usability testing is the process of making sure the features that have been impl
 % Error on homepage for when syntax is invalid etc
 
 \section{Compatibility}
-
-% TODO: use browser stack to make sure the website isn't shit on safari, Edge and opera. Will also need to add media query to show that the editor doesn't work on mobile.
 
 Although web applications don't have to worry about the metal of the system that the browser is relying on, several browsers use different engines and processors in order to render DOM elements to the screen. This means it's good practice to ensure the web application being developed is functional on the different popular and modern browsers.
 
@@ -126,7 +123,6 @@ The backend of the application can be tested in a very similar way by mocking in
 
 \section{Performance}
 
-% Lighthouse tests blah blah blah 
 Performance testing is making sure that the system is working in an acceptably fast way. Measuring the performance of the front end is done by using the built in Lighthouse tool in Google Chrome and for the backend, as it is famously difficult to measure Docker performance \cite{docker-perf} the measuring will be done locally with the Docker CLI \texttt{docker stats} command which provides real time information on the consumption of the containers that are running.
 
 \subsection{Lighthouse Audits}
@@ -160,10 +156,6 @@ The SEO score is due to there not being a meta description of the website in the
 
 A number of tests were performed while visually observing the running of the \texttt{docker stats} command which provides real time usage on CPU, memory, I/O and more. It is worth noting before observing the results that while the usage can say 0\% that does not mean that 0\% of the CPU is being occupied by the container as there is a base level allocation of usage that, while may not be consumed, is still unavailable to other processes. This is mentioned in \cite{docker-perf}.
 
-All tests were done 5 times and an average was taken.
-
-%TODO: put processing power of CPU here somewhere
-
 \begin{table}[h!]
     \centering
     \begin{tabulary}{\textwidth}{L|C|C}
@@ -187,21 +179,23 @@ All tests were done 5 times and an average was taken.
         \hline
         Opening a new tab & Server behaves the same as opening container. New container idles with 0. & No change to server. Modi remains idling at 2.023. New container idles at 0.956.
     \end{tabulary}
+    \caption{Results of \textit{docker stats} through different operations}
 \end{table}
+
+All tests were done 5 times and an average was taken. The specification of the machine that the testing was performed on is 3,500MHz CPU and 15,390MiB.
 
 \subsubsection{Observations}
 
-Node.js idles with relatively high memory consumption but incredibly low CPU usage. 
+The results above show some interesting observations. As theorised in \ref{impl-ws-backend}, the main server which creates the containers and connects them never has very high CPU usage, any high CPU usage from Node.js is when there is typing in the terminal which is when the WebSocket Streams (see \ref{impl-ws-streams}) are connected. This shows that Node.js is a good technology to use when there isn't a heavy amount of processing needed to be done by the server such as this system where most of the work is being done by the Docker API. The memory usage isn't exactly high but is quite a bit higher than any other container, this could be due to the various components that make up Node.js such as the V8 engine and libuv.
 
+The results also show that containers will behave like ordinary processes and take up as much available CPU as they possibly can in order to complete intensely computational tasks. If there are 10 concurrent users all attempting to perform computationally heavy tasks the CPU of the machine hosting the containers will be scheduled by the Completely Fair Scheduler which is the default scheduler in the Linux kernel \cite{cfs-article}.
 Containers will take up as much CPU as they can when they are doing intense computation.
 
-Memory consumption for containers never goes higher than 8MiB at peak and never idles higher than 5.625MiB.
+The containers don't tend to use a significant amount of memory although it depends on the kind of container and the operation running. Running the "Counting to 50 million" exercise on the homepage with JavaScript had a peak of only 2.55MiB but Python peaked at 8MiB. These results should not be taken as fully accurate metrics as the \texttt{docker stats} command only updates once every second. The containers never idled memory usage higher than 5.625MiB at any time.
 
-Usage scales dynamically in all aspects.
+These results will be very helpful in the future for when the backend can be deployed in deciding what appropriate specifications the hosting machine should have for a well performing system.
 
-Biggest potential problems is will many containers trying to do intense computation at once.
-
-\section{Security}
+\section{Security} \label{test-sec}
 
 % Pen testing
 

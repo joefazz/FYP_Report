@@ -4,29 +4,30 @@
 % The literature review is an essential component of your project report. You should discuss the existing literature that is relevant to your project with full and proper referencing. You should aim to refer to a range of material including academic papers, text books, articles and existing product descriptions. It should be clear to the reader why the literature you identify is relevant and how you have incorporated the learnings from your review into your project. For example, you may have made a number of project 
 % Page 4 of 5 decisions based on your review of the literature and these decisions should be described. The literature review should also lead to the creation of a number of possible solutions to your problem articulation and technical specification
 
-% FIXME: this whole section needs referencing
-
 \chapter{Literature Review} \label{lit}
 
-%FIXME: this will need to be updated
-
-This chapter examines various literature around relevant subjects to the project objectives stated in Section \ref{section:probart-techspec}. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-rtc})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It concludes by looking at some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}.
+This chapter examines various literature around relevant subjects to the project objectives stated in Section \ref{section:probart-techspec}. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-rtc})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It also analyses some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}. It concludes by looking at the state of the art in \textbf{frontend} \textit{(Section \ref{lit-frontend})} and \textbf{backend} \textit{(Section \ref{lit-backend})} technologies that can be used to create a modern web application. 
 
 \section{Real-Time Communication} \label{lit-rtc}
 
 Real-Time Communication is an important research topic for this project as in order to create an environment for users that feels as close to a local experience as possible, the requirement for fast feedback is essential.
 
-An experiment was done in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick\cite{websocket}. This experiment compared the different standard HTTP methods of implementing Real-Time Communication compared to the new (at the time) technology of WebSockets which are designed to create a fully duplexed bidirectional data-flow.
+An experiment was done in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick \cite{websocket}. This experiment compared the different standard HTTP methods of implementing Real-Time Communication compared to the new (at the time) technology of WebSockets which are designed to create a fully duplexed bidirectional data-flow.
 
-\textbf{HTTP polling} is an attempt to solve the real-time issue by repeatedly making a request to a web server at a pre determined time interval to check to see if there are any messages waiting to be read.  \textbf{HTTP long-polling} is another solution that sticks to the HTTP protocol but reduces the number of wasteful requests by having the server intelligently not respond to the request if there is no information available and hang until a timeout or information becomes available. Both of these solutions are inadaquate for a responsive system however because the HTTP protocol is still built on top of a system not designed for real-time, fully duplexed communication channel. HTTP relies on a standard 'Request-Response' model which is only half duplex so polling was only a solution that worked for systems that were reliably sending data at a steady rate such as sensors that are being queried for an API.
+\textbf{HTTP polling} is an attempt to solve the real-time issue by repeatedly making a request to a web server at a pre determined time interval to check to see if there are any messages waiting to be read.  \textbf{HTTP long-polling} is another solution that uses the HTTP protocol but reduces the number of wasteful requests by having the server intelligently not respond to the request if there is no information available and hang until a timeout or information becomes available. Both of these solutions are inadaquate for a responsive system however because the HTTP protocol is still built on top of a system not designed for real-time, fully duplexed communication channel. HTTP relies on a standard 'Request-Response' model which is only half duplex so polling was only a solution that worked for systems that were reliably sending data at a steady rate such as sensors that are being queried for an API.
 
 A modern solution to this is the \textbf{WebSocket} protocol proposed in RFC 6455 \cite{wsrfc} which aims to reduce latency by a factor of 3 compared to HTTP in the real-time communication aspect. It is a fully duplexed, bidirectional communication channel that provides an efficient method of communicating between several different clients using a persistent connection between the client and the server. A client may connect to a websocket endpoint on the server, send messages to it, and the server may broadcast messages back to just that client or to every client connected. Due to this behaviour it is very popular for creating text based chat communication systems.
 
-WebSockets work by utilising a persistent TCP connection where messages can be sent back and forth without there having to be a new connection made every time. This behaviour is possible in HTTP since HTTP 1.1 however, WebSockets do not adhere to the standard, 'request, response' cycle that a HTTP request utilises. Any client connected to the socket is capable of broadcasting a message at any time. HTTP persistent connections also still suffer from latency due to the effort the protocol makes to control congestion \cite{httpvsws}. take the concept further by making it simple to embed data with each request through the form of a string in the form of a JSON schema. This makes it ideal for the transfer of small chunks of text where only text is the required form of the response. WebSockets are not appropriate for downloading resources or assets such as images.
+WebSockets work by utilising a persistent TCP connection where messages can be sent back and forth without there having to be a new connection made every time. This behaviour is possible in HTTP since HTTP 1.1 however, WebSockets do not adhere to the standard, 'Request-Response' cycle that a HTTP request utilises. Any client connected to the socket is capable of broadcasting a message at any time. HTTP persistent connections also still suffer from latency due to the effort the protocol makes to control congestion \cite{httpvsws}. WebSockets take the concept further by making it simple to embed data with each request in the form of a string in the form of a JSON schema. This makes it ideal for the transfer of small chunks of text where only text is the required form of the response. WebSockets are not appropriate for downloading resources or assets such as images.
 
-Another new approach of RTC on the web has been developed by Google in collaboration with other browser vendors called \textbf{WebRTC}. This technology is focused on streaming audio and video between different clients on the web. This new technology is aiming to be the replacement for the browser plugins that were necessary in order to use P2P video/voice chat software such as \textit{Skype, Facebook Messenger, Google Hangouts, etcetra} \cite{webrtc}. WebRTC is more appropriate for applications that need a streaming based connection as it's latency is even lower than WebSockets due to it utilising the UDP protocol which has much less overhead compared to the TCP based connection of WebSockets \cite{udpvstcp}. WebRTC would not be appropriate for the use case of WebSockets as when transferring informational data between clients, such as a chat application, it is important to make sure that the data is being received in the correct order whereas UDP is less concerned so long as enough packets get transferred to create a stable audio/video connection.
+Another new approach of RTC on the web has been developed by Google in collaboration with other browser vendors called \textbf{WebRTC} \cite{webrtc}. This technology is focused on streaming audio and video between different clients on the web. This new technology is aiming to be the replacement for the browser plugins that were necessary in order to use P2P video/voice chat software such as \textit{Skype, Facebook Messenger, Google Hangouts, etcetra} \cite{webrtc}. WebRTC is more appropriate for applications that need a streaming based connection as it's latency is even lower than WebSockets due to it utilising the UDP protocol which has much less overhead compared to the TCP based connection of WebSockets \cite{udpvstcp}. WebRTC would not be appropriate for the use case of WebSockets as when transferring informational data between clients, such as a chat application, it is important to make sure that the data is being received in the correct order whereas UDP is less concerned so long as enough packets get transferred to create a stable audio/video connection.
 
-%TODO: Illustration of WebSocket vs HTTP
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.3]{res/WebSockets-Diagram.png}
+    \caption{Illustration of WebSocket connection \cite{websocket-img}}
+    \label{}
+\end{figure}
 
 \section{Online Developer Environments} \label{lit-ode}
 
@@ -36,7 +37,7 @@ A number of existing solutions providing online development environments exist a
 
 Repl.it is very similar to the idea proposed in the Problem Statement (Section \ref{section:probart-probstate}) and a lot of the requirements lined out in Section \ref{section:probart-techspec}. It offers a huge array of Repl templates available for users to get started with many languages/frameworks very quickly. It also uses the Monaco Editor provided by Microsoft in order to provide a first class text editor experience.
 
-Repl.it takes advantage of containeris in order to gives users a full developer experience when visiting the system \cite{replit-containers}. The system also uses it's own container orchestration software in order to scale the instances available to users up and down depending on demand.
+Repl.it takes advantage of containers in order to gives users a full developer experience when visiting the system \cite{replit-containers}. The system also uses it's own container orchestration software in order to scale the instances available to users up and down depending on demand and predicted demand.
 
 Every code result that is available to be viewed/run is viewable through a special .repl.run subdomain. This includes long running processes like web servers which are able to be hosted from these subdomains and be always accessible. This means you could create several repls which all connect to each other like a full system.
 
@@ -49,9 +50,9 @@ From a HCI point of view the website feels very smooth to use and is not frustra
 Repl.it is clearly very focused on the objective of replacing local development environments and does a good job of fulfilling that need.
 
 \subsection{Codecademy}
-Codecademy is a educational focused online environment designed to teach users how to code. Ranging in topics from beginning web development to a course to the IBM Watson API. It is a more directed experience than Repl.it as users are performing tasks for exercises but they are typing code into a similar environment, the code is executed and the result is displayed to the user.
+Codecademy is a educational focused online environment designed to teach users how to code. Ranging in topics from beginning web development to a course on the IBM Watson API. It is a more directed experience than Repl.it as users are performing tasks for exercises but they are typing code into a similar environment, the code is executed and the result is displayed to the user.
 
-Codecademy does allow access directly to the REPL but if code is entered into the editor which allows for user input such as the \texttt{input()} function in Python. Then it interprets the input correctly.
+Codecademy does not allow access directly to the REPL but if code is entered into the editor which allows for user input such as the \texttt{input()} function in Python. Then it interprets the input correctly.
 
 The Codecademy web application is clearly a very complicated system and it shows by how unresponsive it feels when navigating from page to page. The page does a full refresh even though there are elements which do not change on the screen page to page. This leads to a frustrating wait looking a blank screen between page loads.
 
@@ -62,26 +63,26 @@ Glitch is a web application that is focused on trying to cultivate a social codi
 
 Glitch is clearly focused heavily on the social aspect as on the homepage they have a section dedicated to users asking for help so more experienced coders can help them achieve their goals with the applications they want to build. It also showcases user made projects on the homepage which can be \textit{Remixed} which is similar to forking a repository on GitHub for other users to modify.
 
-In terms of design, the website has a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage in \%, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions to projects that are run in Glitch. 
+In terms of design, the website has a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage in \%, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions for projects that are run in Glitch. 
 
 
 \section{Virtual Machines and Containers} \label{lit-containers}
 
-In order to provide as close to local experience as possible to the users of the system this project aims to create. A virtual environment for executing code and saving files is vital. Virtualisation technology is changing significantly due to the different Container solutions which attempt to promote a more disposable and quick type of virtual environment compared to their hypervisor powered counterparts.
+In order to provide as close to local experience as possible to the users of the system this project aims to create. A virtual environment for executing code and saving files is vital. Virtualisation technology is changing significantly due to the different Container solutions which attempt to promote a more disposable and lightweight type of virtual environment compared to their hypervisor powered counterparts.
 
 \subsection{Virtual Machines}
 
-Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} \textit{(VM)} software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
+Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} (VM software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are, a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
 
-In the enterprise world, Virtual Machines are being used to host their customers applications in a full PaaS solution so customers no longer have to worry about hosting their own web servers or other online services.
+In the enterprise world, Virtual Machines are being used to host their customers applications in a full Platform-as-a-Service (PaaS) solution so customers no longer have to worry about hosting their own web servers or other online services.
 
 The general way of interacting with fully virtualised environments is through a hypervisor which is a tool that is responsible for provisioning and monitoring Virtual Machines \cite{hypervisor}. The hypervisor allocates resources such as memory and CPU cores from the host machine that the VM is allowed to consume. When the VM is shut down these resources are freed and can be used by the host system once again. The hypervisor also allows the VM to use a different base operating system than the one that is on the host machine as it provides a whole \textit{Guest OS}.
 
 \subsection{Containers}
 
-Containers are a much lighter virtualisation method than  Virtual Machines despite the functionality being similar. They achieve this as they are much closer to the systems 'bare metal' as any commands that are executed through a container are running on the host's hardware. This means that there is no need for a hypervisor as containers have direct access to the resources. Usage limits can be set in the configuration of container \textit{images} which will be discussed further during this subsection.
+Containers are a much lighter virtualisation method than  Virtual Machines despite the functionality being similar. They achieve this as they are much closer to the systems 'bare metal' as any commands that are executed through a container are running on the host's hardware. This means that there is no need for a hypervisor as containers have direct access to the system resources. Usage limits can be set in the configuration of container \textit{images}.
 
-As Containers traditionally don't utilise a hypervisor the biggest difference between them is that the engine that powers the container provisioning software such as the \textit{Docker Engine} isn't able to virtualise an environment based on a different OS. This is more by design however as it is what gives containers their 'light weight' quality as they aren't having to simulate a whole kernel. Not having a full kernel to set up however means that containers can start up significantly faster than a VM.
+As Containers traditionally don't utilise a hypervisor the biggest difference between them is that the engine that powers the container provisioning software such as the \textit{Docker Engine} isn't able to virtualise an environment based on a different OS. This is more by design however as it is what gives containers their 'lightweight' quality as they aren't having to simulate a whole kernel. Not having a full kernel to set up however means that containers can start up significantly faster than a VM.
 
 \begin{figure}[h!]
     \centering
@@ -91,7 +92,7 @@ As Containers traditionally don't utilise a hypervisor the biggest difference be
 \end{figure}
 
 Due to their performance benefits containers have become popular options for PaaS software. A paper was written comparing the benefits of a fully virtualised environment against a container based solution \cite{contsvsvirt}. It concluded that containers have an inherent advantage over VMs due to the performance benefits and the quick start up time of them. It also mentions that few PaaS vendors are using containers for their systems so far as they are too new of a technology. It is worth nothing that the report was published in 2014 however and since then uptake will have increased.
-
+\pagebreak
 \section{Container Providers}
 
 As containers are a more modern innovation than hypervisors, recently there has been a wave of different technologies that attempt to make simple containers in varying ways.
@@ -107,11 +108,16 @@ As briefly mentioned above, \textbf{Linux Containers} or \textbf{LXC} are the fo
     \item Isolates all files on the container from the Host by using chroot
 \end{itemize}
 
-In terms of downsides the LXC implementation is heavily tied to the Linux OS which means that it is not possible to run it on a different OS such as Windows. There are also some security concerns for LXC as all the containers share the one Host kernel.
+%TODO: explain cgroups and namespaces
+The features listed above are all features standard in the Linux kernel. \texttt{cgroups} \cite{cgroups-man} or control groups are a feature that is able to isolate and allocate resources from the machine to each individual process. 
+
+\texttt{namespaces} \cite{namespaces-man} is another key feature of the kernel which LXC relies on in order to provide isolation to each container. The purpose of namespaces is to wrap a process or a group of processes in an isolated instance of the global resource, changes of global resources are to other processes that are a member of a namespace but aren't visible to other namespaces.
+
+In terms of downsides the LXC implementation is heavily tied to the Linux OS which means that it is not possible to run it on a different OS such as Windows. There are also some security concerns for LXC as all the containers share the one host kernel.
 
 \subsection{OpenVZ Containers}
 
-OpenVZ makes use of a modified Linux kernel with it's own set of extensions. OpenVZ is able to manage physical and virtual servers with \textit{dynamic real-time partitioning}. It similarly offers better performance than a traditional hypervisor based system and utilising the cgroups and namespaces features of Linux to provide it's virtual environments.
+OpenVZ makes use of a modified Linux kernel with it's own set of extensions. OpenVZ is able to manage physical and virtual servers with \textit{dynamic real-time partitioning}. It similarly offers better performance than a traditional hypervisor based system and utilises the cgroups and namespaces features of Linux to provide it's virtual environments.
 
 On top of the advantages of LXC it also provides the following benefits.
 
@@ -120,7 +126,7 @@ On top of the advantages of LXC it also provides the following benefits.
     \item \textbf{Container State} is able to create checkpoints during the container's lifecycle so that it may be recovered from that point should anything go wrong.
 \end{itemize}
 
-A big limitation of OpenVZ is that it can't run on the standard Linux kernel so it is not a very viable solution for this project as the aim to to deploy the system and requiring a modified kernel will add complexity.
+These mean that there is greater user access over the state of containers and that restoration points can be created to store users progress with a container.
 
 \subsection{Docker}
 
@@ -131,19 +137,21 @@ Using the daemon, Docker manages to provide similar functionality as the OpenVZ 
 Unlike OpenVZ, Docker can be run with the standard Linux kernel and therefore is more suited for PaaS software. It also has a thriving ecosystem of pre-made images which offer a huge array of different starting points and tools.
 
 
-\section{Frontend Web Technologies}
+\section{Frontend Web Technologies} \label{lit-frontend}
 
-The client side of web applications is based on three fundamental 
+The client side of web applications is based on three fundamental technologies, \texttt{HTML}, \texttt{CSS} and \texttt{JavaScript} which declare both the layout of the application and the functionality.
 
-Web development has changed a lot since its inception, new technology has been released that gives developer greater flexibility in how they build their modern web apps. Since the creation of jQuery \texttt{(https://jquery.com/)} a number of JavaScript based frameworks/libraries have come about that try to solve some of the problems that are inherent to the web platform.
+Web development has changed a lot since its inception, new technology has been released that gives developer greater flexibility in how they build their modern web apps. Since the creation of jQuery \cite{jquery} a number of JavaScript based frameworks/libraries have come about that try to solve some of the problems that are inherent to the web platform.
 
 \subsection{React}
 
-React is developed by Facebook and attempts to simplify the process of creating interactive UIs by providing a declarative way of writing UI code and encouraging the reuse of \textit{components} which are composed HTML elements which have the option of providing interaction through JavaScript.
+React is developed by Facebook and attempts to simplify the process of creating interactive UIs by providing a declarative way of writing UI code and encouraging the reuse of \textit{components} which are composed HTML elements with the ability to provide interaction through JavaScript.
 
 The need for a library such as React comes from the difficulty involved with maintaining data synchronisation between what is displayed on the screen and variables that exist in the JavaScript code. React also offers a high amount of code reuse with its component architecture. 
 
-React has a very strong community with over 80,000 packages listed on the NPM package registry \texttt{(https://npmjs.com/search?q=react)}.
+React is able to use JavaScript functionality inline with HTML style layout syntax by providing it's own version of HTML called JSX.
+
+React has a very strong community with over 80,000 packages listed on the npm package registry \cite{npm-search-react}.
 
 \subsection{Vue.js}
 
@@ -151,6 +159,27 @@ Vue.js is a JavaScript Framework that offers a lot of the same functionality as 
 
 Vue.js offers more than React out of the box such as an official routing solution for single page applications, global state management and server side rendering.
 
-It has grown very quickly since it came out in 2014 and has just over 25,000 packages published on NPM \texttt{(https://npmjs.com/search?q=vue)}
+Vue uses ordinary HTML as it's view templating however it is able to inject it's own directives and JavaScript functionality by making use of the popular handlebars syntax.
+
+It has grown very quickly since it came out in 2014 and has just over 25,000 packages published on npm \cite{npm-search-vue}.
+
+\section{Backend Technologies} \label{lit-backend}
+
+There are numerous tools in use both professionally and recreationally to create web servers, databases, and other tools that a system might need to utilise. 
+
+Traditionally, the backend of an application was written in a large framework such as \texttt{PHP} or \texttt{.NET}. In more recent times however, there has been a rise of lighter scripting languages such as \texttt{Python} or \texttt{JavaScript} which are powering infrastructure for some of the biggest technology companies in the world.
+
+\subsection{Node.js}
+Node.js \cite{nodejs} is a JavaScript runtime built on Google Chrome's V8 engine. As JavaScript is a single threaded language many thought it was unsuited to hosting backend applications due to the lack of concurrency available to it. Node.js uses the \texttt{libuv} C library \cite{libuv} in order to create an event loop which has the task of offloading external processes such as database calls and when a response come back the event loop can pass the result back to the JavaScript environment. This is how Node.js is made to be a viable option for hosting servers and running in a browser-less environment.
+
+Node.js is in wide use in the industry with companies such as Netflix \cite{netflix-nodejs} which is a testament to how powerful it can be even at a huge scale like Netflix are using it. Node.js is also appropriate for use where the application is smaller in scale and perhaps only needs to interact with external processes and host some endpoints.
+
+\subsection{.NET Core}
+
+.NET Core \cite{.netcore} is a cross platform runtime developed by Microsoft which can be used to develop large scale web applications. 
+
+.NET Core is able to provide a fullstack framework relying on Model-View-Controller architecture where the Models and Controllers are written in C\#, Visual Basic or F\# and the views are written in Microsoft's Razor syntax which is similar in idea to React or Vue's templating/JSX but uses C\# instead of JavaScript.
+
+Being supported and created by Microsoft means that of course it's extremely useful for large scale applications that big companies will want to create. It is less well suited for smaller projects due to the MVC pattern which carries a lot of boilerplate. This can lead to writing a lot of code for simple controllers/views.
 
 \pagebreak

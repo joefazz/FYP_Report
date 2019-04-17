@@ -54,7 +54,7 @@
 \begin{document}
 
 \maketitle
-
+\setcounter{tocdepth}{1}
 \tableofcontents
 % --------------------------------------------------
 % Preamble
@@ -79,7 +79,7 @@
 % --------------------------------------------------
 % Thesis
 % --------------------------------------------------
-\input{tex/introduction.tex}
+% \input{tex/introduction.tex}
 
 \input{tex/problem_definition.tex}
 
@@ -91,12 +91,17 @@
 
 \input{tex/testing.tex}
 
+% TODO: table annotations
 
-
-% --------------------------------------------------
-% Discussion and Reflection ???
-% --------------------------------------------------
+% % --------------------------------------------------
+% % Discussion and Reflection ???
+% % --------------------------------------------------
 \chapter{Discussion: Contribution and Reflection}
+
+% The discussion section follows on naturally from the results presented in the previous section. The discussion  is  usually  substantial  and  is  where  you  discuss  your  test  results  in  detail,  and  their implications, and also potentially make links to relevant previous work. Analyse the success of your solution.  Discuss  limitations  of  this  project,  which  will  help when  you  introduce  your  Future Improvements in the Conclusion section. Reflect also your learning experience, e.g. what you will do differently if you would do this project again.  
+
+
+
 \pagebreak
 
 
@@ -104,6 +109,15 @@
 % ???
 % --------------------------------------------------
 \chapter{Social, Legal, Health and Safety and Ethical Issues}
+
+% The report should include a section addressing the Social and Legal, Health and Safety and Ethical issues initially outlined in the project initiation document.
+
+There are some concerns with the project's output when it comes to the social, legal, health and ethical issues. Socially, the fact that it's an online environment means that someone with limited internet connection or even intermittent internet connection will struggle to use the site reliable and adequately replace a local development environment. This issue could be mitigated if the website was converted to a progressive web app which would enable offline functionality. The project is also limited socially to people who don't speak English as a first language as currently that's the only option, internationalisation support would resolve this issue.
+
+There are some potential legal issues with the system created. As unfettered access to a system where a user has remote access to a virtual Linux environment. Despite the precautions spoken about in \textit{Security - \ref{test-sec}} it isn't feasible to expect that all security holes have been accounted for. A user agreement might be necessary to legally separate the system and developer from the actions of the user on it. This point is also an ethical issue, a significant effort must be made by the developer to make sure that there is adequate monitoring and preventive measures in place.
+
+A lot of the software used to implement this system is open source software meaning that the code is published in full online. The packages in use with this project are created under various open source licenses which all allow software to be used commercially \cite{opensource-licenses}.
+
 \pagebreak
 
 
@@ -111,6 +125,15 @@
 % Conclusion
 % --------------------------------------------------
 \chapter{Conclusion and Future Improvements} \label{conclusion}
+
+% Briefly restate the project objectives and then make straightforward conclusions about your project work and results. What have been the key outcomes? You can suggest future work that logically stems from your work and refers to the limitations of your own work in the Discussion section. 
+
+This project has been an exercise in building a fullstack web application which attempts to create an experience that encourages users to experiment with programming in their own personal environment which closely emulates the experience they would get locally. It successfully incorporates industry standard tooling and familiar UI in a way that means users won't be challenged going from this system to a full integrated developer environment.
+
+The resulting system has achieved these base objectives that were set out and the results show that it has been achieved in way that performs well when measured against modern standards and practices.
+
+There is a lot of space in the future of this project to grow it out into a full product. One of the first priorities for the future would be to implement the gVisor sandbox runtime for the additional security benefits it provides. Deploying the application on a permanent basis would also be a priority but further testing would be required so that the correct configuration for the host of the server could be calculated for the lowest cost. A final future feature for the system in general would be implementing container snapshots and user accounts so that it's possible to save the state of a user's allocated container and come back to it, this would mean that it is escalated to a proper environment that a user can make personal and use repeatedly. 
+
 \pagebreak
 
 

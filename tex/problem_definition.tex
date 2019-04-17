@@ -17,7 +17,7 @@
 % problem  is  adequately  solved.  Again  this  might  require  complex  representations.  
 % The situation-to-be and its representation should help you when composing the Discussion section.
 \section{Context} \label{section:probart-context}
-As computers have become more pervasive, coding has become a skill that has graduated past being something that only people who work in laboratories need to concern themselves with, to a skill that has become highly desirable commercially and is starting to be taught in the regular curriculum to children studying at a primary level education\cite{schools}. This new demand for beginner friendly coding tools lends itself nicely to the promise of an online based environment where people can get started with basic coding concepts without having to trawl through documentation and technical detail about how to get running with one of the popular languages/tools available. This has led to an explosion of popularity for web applications such as \texttt{codecademy.com} which offer pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open and free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
+As computers have become more pervasive, coding has become a skill that has graduated past being something that only people who work in laboratories need to concern themselves with, to a skill that has become highly desirable commercially and is starting to be taught in the regular curriculum to children studying at a primary level education \cite{schools}. This creates new demand for beginner friendly coding tools which lends itself nicely to the promise of an online based environment where people can get started with basic coding concepts without having to trawl through documentation and technical detail about how to get running with one of the popular languages/tools available. This has led to an explosion of popularity for web applications such as \texttt{codecademy.com} which offer pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open and free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
 
 \section{Problem Statement} \label{section:probart-probstate}
 A common pattern with the current platforms that exist is that they provide a strict sandbox within the confines of a predetermined configuration that the user selects, for example, in \texttt{codecademy} and \texttt{repl.it} you're stuck in the environment you pick when you start desired tool. An argument can be made that this makes a new developers life easier as they don't have to consider the more nuanced parts of the file system or learn any sort of terminal commands. However, it seems as though there would be value in a system that can provide both the ease of use that current existing solutions offer and also the freedom to explore a full environment with an array of tools preconfigured that encourage exploration without compromising the security and integrity of the underlying system.
@@ -36,7 +36,7 @@ With the above in mind the enumerated objectives of this project are:
 \end{enumerate}
 
 \subsection{Writing and Executing Code}
-As an essential requirement for the development experience, the ability to edit and execute code is crucial to satisfy the overarching objective of creating an online environment. The execution of code presents a significant technical challenge however as the only code execution that can be done remotely is on a web browser which must be able to execute HTML, CSS and JavaScript. Mobile applications developed for iOS and Android are not capable of executing code.
+As an essential requirement for the development experience, the ability to edit and execute code is crucial to satisfy the overarching objective of creating an online environment. The execution of code presents a significant technical challenge however as the only code execution that can be done remotely is on a web browser which must be able to execute HTML, CSS and JavaScript. Mobile applications developed for iOS and Android are not capable of executing code other than in the language they are written in.
 
 \subsubsection{Functional Requirements}
 \begin{itemize}
@@ -64,11 +64,10 @@ The need for the space that the user occupies to feel personal is a vital elemen
     \item The personal environments will be isolated from the rest of the system
     \item The personal environments will be isolated from each other
     \item The personal environments will perform well and be responsive to user input
-    \item If a personal environment fails then it will be restarted
 \end{itemize}
 
 \subsection{Local Tooling Replacement}
-Tooling has been through some big changes both in web browsers and locally. Web browsers have got to the point where they are so powerful that some of the most popular desktop software is being powered by them\cite{carlo}. It is important to provide tools that will help those new to development, while also offering experience in tools that are of a high quality.
+Tooling has been through some big changes both in web browsers and locally. Web browsers have got to the point where they are so powerful that some of the most popular desktop software is being powered by them \cite{carlo}. It is important to provide tools that will help those new to development, while also offering experience in tools that are of a high quality.
 
 \subsubsection{Functional Requirements}
 \begin{itemize}
@@ -80,7 +79,6 @@ Tooling has been through some big changes both in web browsers and locally. Web 
 \begin{itemize}
     \item Popular tools will be researched and considered before being added to the system
     \item Tools will be standardised across the system
-    \item Tools will be customisable to the users needs
     \item Tools will behave in a responsive manner
 \end{itemize}
 
@@ -123,13 +121,13 @@ This kind of user would benefit more from the ability to have a playground to ex
 \subsubsection{User - Experienced Level Developer}
 This user will have successfully developed systems with a high level of complexity and will most likely have specialised knowledge in a certain domain/environment.
 
-This type of developer will be difficult to convince the benefits of an online working environment when they undoubtedly have a solution that works well for them locally.
+This type of developer will be difficult to convince the benefits of an online working environment when they undoubtedly have a solution that works well for them locally. Perhaps the advantage of being able to mentor developers by making exercises for them would be appealing.
 
 \section{Constraints} \label{section:probart-constraints}
 Some constraints on the development of the project exist.
 
 \begin{itemize}
-    \item Permanent deployment - as the system is likely to be complex, deploying it will be costly and time consuming. Test deployment will be done to experiment with configuration settings in the system but a permanent live deployment will not be.
+    \item Permanent deployment - as the system is likely to be complex, deploying it will be costly and time consuming. Test deployment will be done to experiment with configuration settings in the system and perform benchmarks but a permanent live deployment will not be.
     \item Computer resource availability - the system will be constrained performance wise by the resources available during development meaning that any stress tests are not representative of a deployed system
     \item Significant testing base - as the system will not be deployed it will be difficult to adequately test the system in the manner which it would be used by end user. A different method of testing will have to be explored.
 \end{itemize}

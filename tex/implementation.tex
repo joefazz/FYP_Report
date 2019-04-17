@@ -5,7 +5,7 @@
 
 % Here you describe the detailed design of your solution and the details of the actual implementation. It may be appropriate to discuss aspects of design or implementation that were particularly problematic and/or novel. This section may well be one of the largest in your report and the exact contents will be unique to your project and so there are no general guidelines. Use of several sub-sections here is appropriate.
 
-This chapter focuses on the overall implementation of the system and walks through how the several separate systems interface together and interact in a way that provides the user with a positive experience.
+This chapter focuses on the overall implementation of the system and walks through how the several separate components interface together and interact in a way that provides the user with a positive experience.
 
 \section{Backend}
 
@@ -17,7 +17,7 @@ The database is a straightforward MongoDB \cite{mongo} implementation with two c
 
 %TODO: Relational mapping?
 
-For the Node server to be able to make database calls the MongoDB API must be queried against, this is done by using the \textbf{mongoose} package \cite{mongoose}.
+For the Node server to be able to make database calls the MongoDB API must be queried against, this is done by using the \texttt{mongoose} package \cite{mongoose}.
 
 \subsection{REST API} \label{impl-rest}
 
@@ -27,7 +27,7 @@ To provide an API that a frontend can interact with to retrieve information from
 
 Where \textit{AppObject} is the variable representing the instance of the server. \textit{RequestType} is usually one of GET or POST. \textit{Endpoint} is a string representing the local path the handles the request and \textit{CallbackFunction} is the function that handles the request and sends the response.
 
-so the code \texttt{app.get("/profile", callback)} is the function that would handle GET requests to the \textbf{/profile} endpoint. 
+The code \texttt{app.get("/profile", callback)} is the function that would handle GET requests to the \textbf{/profile} endpoint. 
 
 The only REST endpoints in the backend code are related to the exercises section of the system as those need to be stored in a global database. Most of the communication between the front and back is implemented through WebSocket connections.
 
@@ -64,12 +64,14 @@ The \textbf{/create} endpoint is a POST request used when a user makes a new exe
 The response is the endpoint that the frontend can use to navigate to the page for the newly generated exercise.
 
 \begin{sexylisting}{/create endpoint}
-server.post("/create", (req: Request, res: Response) => {
-    /**
-        Code to handle create request
+server.post("/create", (req, res) => {
+    const { activities, title, description, language } 
+        = req.body;
 
-        This is quite a lot of code refer to appendix %TODO:
-    */
+    console.log(req.body);
+    const acts = activities as IActivity[];
+    
+    {...}
 });
 \end{sexylisting}
 
@@ -94,7 +96,7 @@ Creating a container for every user that connects to the system requires the con
 
 The basic image, comes with the following software pre-installed: \textbf{Alpine Linux Distro}, \textbf{Bash}, \textbf{Python3}, \textbf{Node.js}, \textbf{GCC} and \textbf{Git}.
 
-Alpine Linux is the distribution that the base image of the container which is based on Ubuntu. Bash is a very common shell which is a better default than the standard \textit{ash} or \textit{sh} which are the shells that come with the Alpine image. Bash is important for the code execution aspect of the system which is explained further in \textit{Executing Code - \ref{imp-execode}}. Python, Node and GCC are chosen as those are the 3 runtimes that are supported by the system. Git is installed so if the user writes something that they want to be able to save they can use Git through the command line.
+Alpine Linux is the distribution that the base image of the container which is based on Ubuntu. Bash is a very common shell which is a better default than the standard \textit{ash} or \textit{sh} which are the shells that come with the Alpine image. Bash is important for the code execution aspect of the system which is explained further in \textit{Executing Code - \ref{imp-execode}}. Python, Node and GCC are chosen as those are the three runtimes that are supported by the system. Git is installed so if the user writes something that they want to be able to save they can use Git through the command line.
 
 % TODO: Ref the dockerfile in the appendix
 Some additional configuration that is done in this Dockerfile is the creation of the user account that users of the system will be operating as while they're connected to the container. By default the Docker engine sets the user of a container as root but this is obviously not appropriate for a system where anyone can play with a container so a low permission user is created called \textit{damien} who has their own home folder and ownership of that folder but everything under the root directory is protected.
