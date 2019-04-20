@@ -98,7 +98,65 @@
 
 % The discussion section follows on naturally from the results presented in the previous section. The discussion  is  usually  substantial  and  is  where  you  discuss  your  test  results  in  detail,  and  their implications, and also potentially make links to relevant previous work. Analyse the success of your solution.  Discuss  limitations  of  this  project,  which  will  help when  you  introduce  your  Future Improvements in the Conclusion section. Reflect also your learning experience, e.g. what you will do differently if you would do this project again.  
 
+The results gained from the testing section are from preliminary tests for a still early stage system however they have done a good job of fulfilling the key objectives of the system which were lined out in \textit{Technical Specification - \ref{section:probart-techspec}}. Some interesting observations can be gained from the results and will certainly be useful in the future of the project should it continue past the point of this series of work. 
+
+\section{Meeting Objectives}
+
+\subsection{Write/Execute Code}
+
+This objective is the most important one for the system as it essentially is the binary pass fail for whether or not the aim of replacing a local environment has been achieved. Without the ability to perform these most basic of development actions, this entire project would be a failure. 
+
+As the usability test shows this objective has been fully met and even been exceeded as the ability to read code from a file is also possible with the system which was not within the scope of the initial PID or objectives.
+
+\subsection{Personal Environments}
+
+Being able to give users an environment that they can feel secure with knowing that no one else can tamper with it is an important part of a local development experience and therefore a must have feature of any sort of software attempting to provide that experience on a different platform.
+
+The usability tests show that the users environments are personal to their session and that these environments will consume as much of the system resource as the Docker Engine is allowed to give them \textit{(see \ref{test:perf-docker})}. The environments are entirely isolated from each other thanks to the container implementation selected and come preconfigured with common sense defaults like Node.js, Python3, GCC and Git. The option to add more languages is not only desirable but it is also easy, so long as a Docker image exists for it.
+
+\subsection{Eliminate Local Tooling Requirement}
+
+The long term goal of this project is to entirely eliminate the need for tools to be installed locally on someone's computer. Almost all of the aims and implementation have been done to try and make this scenario a reality.
+
+By providing high quality tools in the project such as a world class text editor and a full terminal emulation the difference between using this application and locally running VSCode on a Linux machine is small enough for new developers that it is barely non existent. More experienced developers may miss the freedom of being able to install tooling at will however these developers are not the primary target audience.
+
+This objective is something that is always being strived to reach with a project like this and is too abstract and subjective to say if it's been achieved or not at this stage. Adding the ability to have a snapshot so a user can come back to work on something in the future would be the next big step towards meeting this objective.
+
+\subsection{Encourage Exploration}
+
+This objective is also fairly abstract. The aim is to give users an environment that, by eliminating the barriers of installation and configuration of tools, encourages playful behaviour in the knowledge that nothing can break permanently.
+
+By providing users with an exercise section there is a way for those new to programming to be able to learn key concepts without having to leave the site. The ability to create an exercise which can be shared is another way that users can explore development. By creating an exercise from a concept they've just learnt or having a mentor send them an exercise.
+
+This objective is as abstract and hard to assess as eliminating local tooling, progress on this objective would be helped by a bigger directory of exercises where user created exercises could appear. A curated best of list every month would help towards achieving this objective as well. 
+
 \section{Observations}
+
+\subsection{Docker Containers}
+
+The results above show some interesting observations. As theorised in \ref{impl-ws-backend}, the main server which creates the containers and connects them never has very high CPU usage, any high CPU usage from Node.js is when there is typing in the terminal which is when the WebSocket Streams (see \ref{impl-ws-streams}) are connected. This shows that Node.js is a good technology to use when there isn't a heavy amount of processing needed to be done by the server such as this system where most of the work is being done by the Docker API. The memory usage isn't exactly high but is quite a bit higher than any other container, this could be due to the various components that make up Node.js such as the V8 engine and libuv.
+
+The results also show that containers will behave like ordinary processes and take up as much available CPU as they possibly can in order to complete intensely computational tasks. If there are 10 concurrent users all attempting to perform computationally heavy tasks the CPU of the machine hosting the containers will be scheduled by the Completely Fair Scheduler which is the default scheduler in the Linux kernel \cite{cfs-article}.
+Containers will take up as much CPU as they can when they are doing intense computation.
+
+The containers don't tend to use a significant amount of memory although it depends on the kind of container and the operation running. Running the "Counting to 50 million" exercise on the homepage with JavaScript had a peak of only 2.55MiB but Python peaked at 8MiB. These results should not be taken as fully accurate metrics as the \texttt{docker stats} command only updates once every second. The containers never idled memory usage higher than 5.625MiB at any time.
+
+These results will be very helpful in the future for when the backend can be deployed in deciding what appropriate specifications the hosting machine should have for a well performing system.
+
+\subsection{Security}
+
+The testing performed showed that, while good preventive steps have been taken to try and create a secure environment. It is fairly difficult to make sure that a system, which inherently runs on the host machines metal, is able to be completely isolated from that host machine.
+
+A new tool from Google is proving effective at mitigating the risk of using containers as remote environments. gVisor \cite{gvisor} is compliant with the Open Container Initiative and works as a drop in runtime for the \texttt{runc} runtime that Docker uses by default and provides a small layer of security on top similar to how a traditional hypervisor provides security.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[scale=0.5]{res/gvisor.PNG}
+    \caption{gVisor Runtime Architecture \cite{gvisor-info}}
+    \label{fig:gvisor}
+\end{figure}
+
+Shown in the article \cite{gvisor-info} simply replacing the \texttt{runc} runtime with the gVisor based \texttt{runsc} means that a specific kernel exploit no longer works in containers. This type of technology is inevitable as more huge industry giants adopt containerisation and provides an optimistic view of how using containers can be both well performing and secure.
 
 \pagebreak
 

@@ -6,13 +6,13 @@
 
 \chapter{Literature Review} \label{lit}
 
-This chapter examines various literature around relevant subjects to the project objectives stated in Section \ref{section:probart-techspec}. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-rtc})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It also analyses some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}. It concludes by looking at the state of the art in \textbf{frontend} \textit{(Section \ref{lit-frontend})} and \textbf{backend} \textit{(Section \ref{lit-backend})} technologies that can be used to create a modern web application. 
+This chapter examines various literature surrounding the project objectives stated in Section \ref{section:probart-techspec} with the purpose of gaining insight into the current state of the art and how other similar products function. It looks at the various methods of \textbf{Real-Time Communication} that exist in order to create an environment where feedback is fast and frequent \textit{(Section \ref{lit-rtc})}. It examines some \textbf{existing systems} that are providing some of the features listed out and critically examines the positives and negatives of some of the technical choices that are apparent in these systems \textit{(Section \ref{lit-ode})}. It also analyses some of the modern advances in \textbf{Virtualisation} technology along with how the advent of \textbf{Containers} have changed the landscape of PaaS services and virtual environments in general \textit{(Section \ref{lit-containers})}. It concludes by looking at the state of the art in \textbf{frontend} \textit{(Section \ref{lit-frontend})} and \textbf{backend} \textit{(Section \ref{lit-backend})} technologies that can be used to create a modern web application. 
 
 \section{Real-Time Communication} \label{lit-rtc}
 
-Real-Time Communication is an important research topic for this project as in order to create an environment for users that feels as close to a local experience as possible, the requirement for fast feedback is essential.
+Real-Time Communication (RTC) is an important research topic for this project as in order to create an environment for users that feels as close to a local experience as possible, the requirement for fast feedback is essential.
 
-An experiment was done in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick \cite{websocket}. This experiment compared the different standard HTTP methods of implementing Real-Time Communication against the new (at the time) technology of WebSockets which are designed to create a fully duplexed bidirectional data-flow.
+An experiment carried out in 2012 discussing the performance of different RTC methods by Professors at the University of New Brunswick \cite{websocket}. This experiment compared the different standard HTTP methods of implementing Real-Time Communication against the new (at the time) technology of WebSockets which are designed to create a fully duplexed bidirectional data-flow.
 
 \subsection{HTTP Polling}
 
@@ -20,9 +20,9 @@ An experiment was done in 2012 discussing the performance of different RTC metho
 
 \subsection{WebSockets}
 
-A modern solution to this is the \textbf{WebSocket} protocol proposed in RFC 6455 \cite{wsrfc} which aims to reduce latency by a factor of 3 compared to HTTP in the real-time communication aspect. It is a fully duplexed, bidirectional communication channel that provides an efficient method of communicating between several different clients using a persistent connection between the client and the server. A client may connect to a websocket endpoint on the server, send messages to it, and the server may broadcast messages back to just that client or to every client connected. Due to this behaviour it is very popular for creating text based chat communication systems.
+A modern solution to the issues of HTTP polling is the \textbf{WebSocket} protocol proposed in RFC 6455 \cite{wsrfc} which aimed to reduce latency by a factor of 3 compared to HTTP in the real-time communication aspect. It is a fully duplexed, bidirectional communication channel that provides an efficient method of communicating between several different clients using a persistent connection between the client and the server. A client may connect to a websocket endpoint on the server, send messages to it, and the server may broadcast messages back to just that client or to every client connected. Due to this behaviour it is very popular for creating text based chat communication systems.
 
-WebSockets work by utilising a persistent TCP connection where messages can be sent back and forth without there having to be a new connection made every time. This behaviour is possible in HTTP since HTTP 1.1 however, WebSockets do not adhere to the standard, 'Request-Response' cycle that a HTTP request utilises. Any client connected to the socket is capable of broadcasting a message at any time. HTTP persistent connections also still suffer from latency due to the effort the protocol makes to control congestion \cite{httpvsws}. WebSockets take the concept further by making it simple to embed data with each request in the form of a string in the form of a JSON schema. This makes it ideal for the transfer of small chunks of text where only text is the required form of the response. WebSockets are not appropriate for downloading resources or assets such as images.
+WebSockets work by utilising a persistent TCP connection where messages can be sent back and forth without there having to be a new connection made every time \cite{wsrfc}. This behaviour is possible in HTTP since HTTP 1.1 however, WebSockets do not adhere to the standard, 'Request-Response' cycle that a HTTP request utilises. Any client connected to the socket is capable of broadcasting a message at any time. HTTP persistent connections also still suffer from latency due to the effort the protocol makes to control congestion \cite{httpvsws}. WebSockets take the concept further by making it simple to embed data with each request in the form of a string in the form of a JSON schema. This makes it ideal for the transfer of small chunks of text where only text is the required form of the response. WebSockets are not appropriate for downloading resources or assets such as images.
 
 \begin{figure}[h!]
     \centering
@@ -33,55 +33,17 @@ WebSockets work by utilising a persistent TCP connection where messages can be s
 
 \subsection{Web RTC}
 
-Another new approach of RTC on the web has been developed by Google in collaboration with other browser vendors called \textbf{WebRTC} \cite{webrtc}. This technology is focused on streaming audio and video between different clients on the web. This new technology is aiming to be the replacement for the browser plugins that were necessary in order to use P2P video/voice chat software such as \textit{Skype, Facebook Messenger, Google Hangouts, etcetra} \cite{webrtc}. WebRTC is more appropriate for applications that need a streaming based connection as it's latency is even lower than WebSockets due to it utilising the UDP protocol which has much less overhead compared to the TCP based connection of WebSockets \cite{udpvstcp}. WebRTC would not be appropriate for the use case of WebSockets as when transferring informational data between clients, such as a chat application, it is important to make sure that the data is being received in the correct order whereas UDP is less concerned so long as enough packets get transferred to create a stable audio/video connection.
-
-
-\section{Online Developer Environments} \label{lit-ode}
-
-A number of existing solutions providing online development environments exist and have been analysed for the purpose of this review.
-
-\subsection{Repl.it}
-
-Repl.it is very similar to the idea proposed in the Problem Statement (Section \ref{section:probart-probstate}) and a lot of the requirements lined out in Section \ref{section:probart-techspec}. It offers a huge array of Repl templates available for users to get started with many languages/frameworks very quickly. It also uses the Monaco Editor provided by Microsoft in order to provide a first class text editor experience.
-
-Repl.it takes advantage of containers in order to gives users a full developer experience when visiting the system \cite{replit-containers}. The system also uses it's own container orchestration software in order to scale the instances available to users up and down depending on demand and predicted demand.
-
-Every code result that is available to be viewed/run is viewable through a special .repl.run subdomain. This includes long running processes like web servers which are able to be hosted from these subdomains and be always accessible. This means you could create several repls which all connect to each other like a full system.
-
-Technically the system is very impressive, something that the system doesn't recreate quite as smoothly as a local environment would is a small amount of latency between a key being pressed and the corresponding value appearing in the REPL itself.
-
-The system also seems to remove all previously typed entries of the REPL on every press of the \textit{Run} button. This suggests that it is giving you a new REPL instance on every execution which isn't how a local environment works.
-
-From a HCI point of view the website feels very smooth to use and is not frustrating to use other than the latency noted when typing directly into the running container via the REPL.
-
-Repl.it is clearly very focused on the objective of replacing local development environments and does a good job of fulfilling that need.
-
-\subsection{Codecademy}
-Codecademy is a educational focused online environment designed to teach users how to code. Ranging in topics from beginning web development to a course on the IBM Watson API. It is a more directed experience than Repl.it as users are performing tasks for exercises but they are typing code into a similar environment, the code is executed and the result is displayed to the user.
-
-Codecademy does not allow access directly to the REPL but if code is entered into the editor which allows for user input such as the \texttt{input()} function in Python. Then it interprets the input correctly.
-
-The Codecademy web application is clearly a very complicated system and it shows by how unresponsive it feels when navigating from page to page. The page does a full refresh even though there are elements which do not change on the screen page to page. This leads to a frustrating wait looking a blank screen between page loads.
-
-It is clear that Codecademy is a focused environment to encourage new developers to get into development by offering an easy to start environment and heavily directed experience. It is not concerned with the idea of replacing local development environments so much as making sure that it's not something beginners should need to think of when wanted to get to know a new tool.
-
-\subsection{Glitch}
-Glitch is a web application that is focused on trying to cultivate a social coding community that encourages developers to help each other out and build mini applications with JavaScript and Node.js. It provides an online coding environment that uses containers to isolate the users runtime.
-
-Glitch is clearly focused heavily on the social aspect as on the homepage they have a section dedicated to users asking for help so more experienced coders can help them achieve their goals with the applications they want to build. It also showcases user made projects on the homepage which can be \textit{Remixed} which is similar to forking a repository on GitHub for other users to modify.
-
-In terms of design, the website has a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage in \%, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions for projects that are run in Glitch. 
-
+Another new approach of RTC on the web has been developed by Google in collaboration with other browser vendors called \textbf{WebRTC} \cite{webrtc}. This technology is focused on streaming audio and video between different clients on the web. This new technology is aiming to be the replacement for the browser plugins that were necessary in order to use P2P video/voice chat software such as \textit{Skype, Facebook Messenger, Google Hangouts, etcetera} \cite{webrtc}. WebRTC is more appropriate for applications that need a streaming based connection as it's latency is even lower than WebSockets due to it utilising the UDP protocol which has much less overhead compared to the TCP based connection of WebSockets \cite{udpvstcp}. WebRTC would not be appropriate for the use case of WebSockets as when transferring informational data between clients, such as a chat application, it is important to make sure that the data is being received in the correct order whereas UDP is less concerned so long as enough packets get transferred to create a stable audio/video connection.
 
 \section{Virtual Machines and Containers} \label{lit-containers}
 
-In order to provide as close to local experience as possible to the users of the system this project aims to create. A virtual environment for executing code and saving files is vital. Virtualisation technology is changing significantly due to the different Container solutions which attempt to promote a more disposable and lightweight type of virtual environment compared to their hypervisor powered counterparts.
+To meet the objective of providing as close to local experience as possible to the users of the system this project aims to create. A virtual environment for executing code and saving files is vital. Virtualisation technology is changing significantly due to the different Container solutions which attempt to promote a more disposable and lightweight type of virtual environment compared to their hypervisor powered counterparts.
 
 \subsection{Virtual Machines}
 
 Virtualisation is a technique in computing that, most commonly, is seen by users in the \textbf{Virtual Machine} (VM) software. Virtual Machines are heavily utilised to provide virtual desktop environments on top of a users already existing desktop. The advantages of which are, a sandbox environment for potentially harmful operations, such as when penetration testers are trying to fingerprint a virus. The option of trying a different OS without needing to dedicate a partition of disk space to it or deal with a dual booting set up is another user facing benefit of virtual machines.
 
-In the enterprise world, Virtual Machines are being used to host their customers applications in a full Platform-as-a-Service (PaaS) solution so customers no longer have to worry about hosting their own web servers or other online services.
+In the enterprise world, Virtual Machines are being used to host their customers applications in a full Platform-as-a-Service (PaaS) solution so customers no longer have to worry about hosting their own web servers or other online services. %TODO: reference
 
 The general way of interacting with fully virtualised environments is through a hypervisor which is a tool that is responsible for provisioning and monitoring Virtual Machines \cite{hypervisor}. The hypervisor allocates resources such as memory and CPU cores from the host machine that the VM is allowed to consume. When the VM is shut down these resources are freed and can be used by the host system once again. The hypervisor also allows the VM to use a different base operating system than the one that is on the host machine as it provides a whole \textit{Guest OS}.
 
@@ -140,8 +102,43 @@ The Docker process is a daemon which can provide and manage Linux Containers as 
 
 Using the daemon, Docker manages to provide similar functionality as the OpenVZ containers in relation to lifecycle and state. The state of a container at any time can be saved to a new image which can then be reloaded by the daemon to that same point
 
-Unlike OpenVZ, Docker can be run with the standard Linux kernel and therefore is more suited for PaaS software. It also has a thriving ecosystem of pre-made images which offer a huge array of different starting points and tools.
+Unlike OpenVZ, Docker can be run with the standard Linux kernel and therefore is more suited for PaaS software. It also has a thriving ecosystem of pre-made images which offer a huge array of different starting points and tools \cite{dockerhub}.
 
+\section{Online Developer Environments} \label{lit-ode}
+
+A number of existing solutions providing online development environments exist and have been analysed for the purpose of this review.
+
+\subsection{Repl.it}
+
+Repl.it is very similar to the idea proposed in the Problem Statement (Section \ref{section:probart-probstate}) and a lot of the requirements lined out in Section \ref{section:probart-techspec}. It offers a huge array of Repl templates available for users to get started with many languages/frameworks very quickly. It also uses the Monaco Editor provided by Microsoft in order to provide a first class text editor experience.
+
+Repl.it takes advantage of containers in order to gives users a full developer experience when visiting the system \cite{replit-containers}. The system also uses it's own container orchestration software in order to scale the instances available to users up and down depending on demand and predicted demand.
+
+Every code result that is available to be viewed/run is viewable through a special .repl.run subdomain. This includes long running processes like web servers which are able to be hosted from these subdomains and be always accessible. This means you could create several repls which all connect to each other like a full system.
+
+Technically the system is very impressive, something that the system doesn't recreate quite as smoothly as a local environment would is a small amount of latency between a key being pressed and the corresponding value appearing in the REPL itself.
+
+The system also seems to remove all previously typed entries of the REPL on every press of the \textit{Run} button. This suggests that it is giving you a new REPL instance on every execution which isn't how a local environment works.
+
+From a HCI point of view the website feels very smooth to use and is not frustrating to use other than the latency noted when typing directly into the running container via the REPL.
+
+Repl.it is clearly very focused on the objective of replacing local development environments and does a good job of fulfilling that need.
+
+\subsection{Codecademy}
+Codecademy is a educational focused online environment designed to teach users how to code. Ranging in topics from beginning web development to a course on the IBM Watson API. It is a more directed experience than Repl.it as users are performing tasks for exercises but they are typing code into a similar environment, the code is executed and the result is displayed to the user.
+
+Codecademy does not allow access directly to the REPL but if code is entered into the editor which allows for user input such as the \texttt{input()} function in Python. Then it interprets the input correctly.
+
+The Codecademy web application is clearly a very complicated system and it shows by how unresponsive it feels when navigating from page to page. The page does a full refresh even though there are elements which do not change on the screen page to page. This leads to a frustrating wait looking a blank screen between page loads.
+
+It is clear that Codecademy is a focused environment to encourage new developers to get into development by offering an easy to start environment and heavily directed experience. It is not concerned with the idea of replacing local development environments so much as making sure that it's not something beginners should need to think of when wanted to get to know a new tool.
+
+\subsection{Glitch}
+Glitch is a web application that is focused on trying to cultivate a social coding community that encourages developers to help each other out and build mini applications with JavaScript and Node.js. It provides an online coding environment that uses containers to isolate the users runtime.
+
+Glitch is clearly focused heavily on the social aspect as on the homepage they have a section dedicated to users asking for help so more experienced coders can help them achieve their goals with the applications they want to build. It also showcases user made projects on the homepage which can be \textit{Remixed} which is similar to forking a repository on GitHub for other users to modify.
+
+In terms of design, the website has a very colourful friendly interface. A feature which is particularly notable is in each project editor there is an option to view \textit{Container Stats} where the CPU usage is shown as a percentage, Memory usage in bytes and additional relevant information can be found. There is also guidelines on the technical restrictions for projects that are run in Glitch. 
 
 \section{Frontend Web Technologies} \label{lit-frontend}
 
