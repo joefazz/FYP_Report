@@ -16,13 +16,13 @@
 % suitable to your domain). You would also include a vision of the situation-to-be where  the  
 % problem  is  adequately  solved.  Again  this  might  require  complex  representations.  
 % The situation-to-be and its representation should help you when composing the Discussion section.
-As more people are learning to code there are more solutions appearing with the aim of both, helping new developers get started with tools and languages and, giving more experienced developers an environment to test new code snippets for their personal or professional development. As code has grown more popular it has led to an explosion of popularity for web applications such as \texttt{codecademy.com} which offer pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open, free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
+As the number of people are learning to code increases, more solutions  are appearing with the aim of both, helping new developers get started with tools and languages and, giving more experienced developers an environment to test new code snippets for their personal or professional development. As code development has grown in more popularity it has led to an explosion of web applications such as \texttt{codecademy.com}, which offers pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open, free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
 
 \section{Problem Statement} \label{section:probart-probstate}
-A common pattern with the current platforms that exist is that they provide a strict sandbox within the confines of a predetermined configuration that the user selects, for example, in \texttt{codecademy} and \texttt{repl.it} you're stuck in the environment you pick when you start the desired tool. An argument can be made that this is an easier introduction for a new developer as they don't have to consider the more nuanced parts of the file system or learn any sort of terminal commands. However, it seems as though there would be value in a system that can provide both the ease of use that current existing solutions offer and also the freedom to explore a full environment with an array of tools preconfigured that encourage exploration without compromising the security and integrity of the underlying system.
+A common pattern with the current platforms that exist is that they provide a strict sandbox within the confines of a predetermined configuration that the user selects. For example, in \texttt{codecademy} and \texttt{repl.it} you're confined to the environment you select when you start the desired tool. An argument can be made that this is an easier introduction for a new developer as they don't have to consider the more nuanced parts of the file-system or get comfortable with a command line environment. However it is apparent that there would be value in a system that can provide both the ease of use that current existing solutions offer and also the freedom to explore a full environment with an array of tools preconfigured that encourage exploration without compromising the security and integrity of the underlying system.
 
 \section{Technical Specification} \label{section:probart-techspec}
-Based on the problem statement the potential scope for the project is very broad, there are companies and teams of developers that have the sole goal of making sure their online environments provide users with as smooth an experience as they would expect if they had installed the tools locally.
+Based on the problem statement the potential scope for the project is very broad. There are companies and teams of developers that have the sole goal of making sure their online environments provide users with as smooth an experience as they would expect if they had installed the tools locally.
 
 This project will focus on the essential functionality required to behave as an online development environment while supporting a good variety of languages and offering a space which encourages exploration into different coding concepts.
 
@@ -35,31 +35,35 @@ With the above in mind the enumerated objectives of this project are:
 \end{enumerate}
 
 \subsection{Writing and Executing Code}
-As an essential requirement for the development experience, the ability to edit and execute code is crucial to satisfy the overarching objective of creating an online environment. The execution of code presents a significant technical challenge however as the only code execution that can be done remotely is on a web browser which must be able to execute HTML, CSS and JavaScript. Mobile applications developed for iOS and Android are not capable of executing code other than in the language they are written in.
+As an essential requirement for the development experience, the ability to edit and execute code is crucial to satisfy the overarching objective of creating an online environment. The execution of code presents a significant technical challenge as the only code execution that can be done remotely is on a web browser which must be able to execute HTML, CSS and JavaScript. Mobile applications developed for iOS and Android are not capable of executing code other than in the language they are written in.
 
 \subsubsection{Functional Requirements}
 \begin{itemize}
-    \item Code will be able to be typed using the platform
+    \setlength{\itemsep}{0em}
+    \item Code will be able to be entered using the platform
     \item Code will be able to be saved
     \item Code will be able to be read from the platform
     \item Code will be able to be executed
 \end{itemize}
 \subsubsection{Non-Functional Requirements}
 \begin{itemize}
+    \setlength{\itemsep}{0em}
     \item A good variety of languages will be supported
     \item The basic features of a code editor will be available (i.e. syntax highlighting)
     \item Code that is executing will not stall the platform
 \end{itemize}
 
 \subsection{Personal Environments}
-The need for the space that the user occupies to feel personal is a vital element to local development environment and therefore must be well implemented for an online equivalent.
+The need for the space that the user occupies to feel personal is a vital element to a local development environment and therefore must be well implemented for an online equivalent.
 
 \subsubsection{Functional Requirements}
 \begin{itemize}
+    \setlength{\itemsep}{0em}
     \item A personal environment will be allocated to every user
 \end{itemize}
 \subsubsection{Non-Functional Requirements}
 \begin{itemize}
+    \setlength{\itemsep}{0em}
     \item The personal environments will be isolated from the rest of the system
     \item The personal environments will be isolated from each other
     \item The personal environments will perform well and be responsive to user input
@@ -70,27 +74,31 @@ Tooling has been through some big changes both in web browsers and locally. Web 
 
 \subsubsection{Functional Requirements}
 \begin{itemize}
+    \setlength{\itemsep}{0em}
     \item High quality tools will be available to the user
     \item Industry standard tools will be available to the user
     \item The system will eliminate the need for local tooling
 \end{itemize}
 \subsubsection{Non-Functional Requirements}
 \begin{itemize}
+    \setlength{\itemsep}{0em}
     \item Popular tools will be researched and considered before being added to the system
     \item Tools will be standardised across the system
     \item Tools will behave in a responsive manner
 \end{itemize}
 
 \subsection{Encourage Exploration into Development}
-Lowering the barrier to entry through the requirements stated above will inherently make it easier to explore development further steps can be taken in order to engage users with the system such as allowing them to create short coding exercises that can be shared with friends or on social media.
+Lowering the barrier to entry through the requirements stated above will inherently make it easier to explore development. Further steps can be taken in order to engage users with the system such as allowing them to create short coding exercises that can be shared with friends or on social media.
 
 \subsubsection{Functional Requirements}
 \begin{itemize}
+    \setlength{\itemsep}{0em}
     \item Implement exercises for users to do
     \item Allow creation of exercises by users
 \end{itemize}
 \subsubsection{Non-Functional Requirements}
 \begin{itemize}
+    \setlength{\itemsep}{0em}
     \item Allow any exercise to be shared
     \item Assign difficulty level to exercises
     \item Provide an open area for the user to explore their personal environment
@@ -100,7 +108,7 @@ Lowering the barrier to entry through the requirements stated above will inheren
 This project has a number of relevant stakeholders with various degrees of interest in the outcomes. All of them will be considered during the construction of the system.
 
 \subsubsection{The Developer - Joseph Fazzino}
-The developer of the system is responsible for making 100\% of the the technical decisions and is responsible for delivering a fully functioning system adhering to the technical specification found in  Section \ref{section:probart-techspec} of this report.
+The developer of the system is responsible for making 100\% of the technical decisions and is responsible for delivering a fully functioning system adhering to the technical specification found in  Section \ref{section:probart-techspec} of this report.
 
 \subsubsection{Project Supervisor - Dr. Hong Wei}
 The supervisor of this project is overseeing the development and design process that is being undertaken. 
@@ -108,12 +116,12 @@ The supervisor of this project is overseeing the development and design process 
 They provide guidance when it comes to essential functionality and ways that technical requirements can be implemented.
 
 \subsubsection{User - Beginner Level Developer}
-Those new to development will not have experience with the terminology and syntax that exists in programming and wider computer science. They may have an understanding of basic coding concepts taught to them during formal education.
+Those new to development will not have experience with the terminology and syntax that exists in programming and computer science as a topic. They may have an understanding of basic coding concepts taught to them during formal education.
 
 The beginner user should be able to use the system in order to become more familiar with generic programming concepts. The exercises available through the system will likely be the area they spend the most time.
 
 \subsubsection{User - Intermediate Level Developer}
-A user more familiar with the general work flow of a developer will be able to understand certain levels of nuance of how a system might be implemented and consider how they may solve certain problems.
+A user more familiar with the general workflow of a developer will be able to understand certain levels of nuance of how a system might be implemented and consider how they may solve certain problems.
 
 This kind of user would benefit more from the ability to have a playground to explore the system in so they can understand the functionality that it provides and maybe try to explore the extent to which it works.
 

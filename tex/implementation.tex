@@ -15,7 +15,6 @@ The backend of the system is implemented in Node.js and provides the API that th
 
 The database is a straightforward MongoDB \cite{mongo} implementation with two collections, one for exercises and one for activities. An exercise can have many activities but activities can only belong to one exercise.
 
-%TODO: Relational mapping?
 
 For the Node server to be able to make database calls the MongoDB API must be queried against, this is done by using the \texttt{mongoose} package \cite{mongoose}.
 
