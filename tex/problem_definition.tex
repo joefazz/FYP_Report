@@ -16,13 +16,13 @@
 % suitable to your domain). You would also include a vision of the situation-to-be where  the  
 % problem  is  adequately  solved.  Again  this  might  require  complex  representations.  
 % The situation-to-be and its representation should help you when composing the Discussion section.
-As the number of people are learning to code increases, more solutions  are appearing with the aim of both, helping new developers get started with tools and languages and, giving more experienced developers an environment to test new code snippets for their personal or professional development. As code development has grown in more popularity it has led to an explosion of web applications such as \texttt{codecademy.com}, which offers pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open, free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
+As the number of people learning to code increases, more solutions  are appearing with the aim of both, helping new developers get started with tools and languages and, giving more experienced developers an environment to test new code snippets for their personal or professional development. As code development has grown in more popularity it has led to an explosion of web applications such as \texttt{codecademy.com}, which offers pre-made, executable exercises for a number of languages. A similar platform \texttt{repl.it} offers a more open, free-form experience and attempts to recreate the environment a developer may have on their machine through the web browser along with online compilation.
 
 \section{Problem Statement} \label{section:probart-probstate}
 A common pattern with the current platforms that exist is that they provide a strict sandbox within the confines of a predetermined configuration that the user selects. For example, in \texttt{codecademy} and \texttt{repl.it} you're confined to the environment you select when you start the desired tool. An argument can be made that this is an easier introduction for a new developer as they don't have to consider the more nuanced parts of the file-system or get comfortable with a command line environment. However it is apparent that there would be value in a system that can provide both the ease of use that current existing solutions offer and also the freedom to explore a full environment with an array of tools preconfigured that encourage exploration without compromising the security and integrity of the underlying system.
 
 \section{Technical Specification} \label{section:probart-techspec}
-Based on the problem statement the potential scope for the project is very broad. There are companies and teams of developers that have the sole goal of making sure their online environments provide users with as smooth an experience as they would expect if they had installed the tools locally.
+Based on the problem statement and objectives defined in the Project Initiation Document Appendix A the potential scope for the project is very broad. There are companies and teams of developers that have the sole goal of making sure their online environments provide users with as smooth an experience as they would expect if they had installed the tools locally.
 
 This project will focus on the essential functionality required to behave as an online development environment while supporting a good variety of languages and offering a space which encourages exploration into different coding concepts.
 
@@ -35,7 +35,7 @@ With the above in mind the enumerated objectives of this project are:
 \end{enumerate}
 
 \subsection{Writing and Executing Code}
-As an essential requirement for the development experience, the ability to edit and execute code is crucial to satisfy the overarching objective of creating an online environment. The execution of code presents a significant technical challenge as the only code execution that can be done remotely is on a web browser which must be able to execute HTML, CSS and JavaScript. Mobile applications developed for iOS and Android are not capable of executing code other than in the language they are written in.
+As an essential requirement for the development experience, the ability to edit and execute code is crucial to satisfy the overarching objective of creating an online environment. The execution of code presents a significant technical challenge as the only code execution that can be done remotely is on a web browser which must be able to execute HTML, CSS and JavaScript.
 
 \subsubsection{Functional Requirements}
 \begin{itemize}

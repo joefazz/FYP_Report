@@ -5,36 +5,38 @@
 
 % Here you describe the detailed design of your solution and the details of the actual implementation. It may be appropriate to discuss aspects of design or implementation that were particularly problematic and/or novel. This section may well be one of the largest in your report and the exact contents will be unique to your project and so there are no general guidelines. Use of several sub-sections here is appropriate.
 
-This chapter focuses on the overall implementation of the system and walks through how the several separate components interface together and interact in a way that provides the user with a positive experience.
+This chapter focuses on the overall implementation of the system and walks through how the separate components interface together and interact in a way that provides the user with a positive experience.
 
-\section{Backend}
+\section{Back-end}
 
-The backend of the system is implemented in Node.js and provides the API that the frontend will interact with through REST requests and WebSocket messages. TypeScript \cite{typescript} is being used rather than plain JavaScript in order to provide support for static types and catch more errors during the build time compilation rather than during run time.
+The back-end of the system is implemented in Node.js and provides the API that the front-end will interact with through REST requests and WebSocket messages. TypeScript \cite{typescript} is being used rather than plain JavaScript in order to provide support for static types and catch more errors during the build time compilation rather than during run time.
+
+A link to the back-end code can be found in Appendix C
 
 \subsection{Database}
 
-The database is a straightforward MongoDB \cite{mongo} implementation with two collections, one for exercises and one for activities. An exercise can have many activities but activities can only belong to one exercise.
+The database use MongoDB \cite{mongo}with two collections, one for exercises and one for activities. An exercise can have many activities but activities can only belong to one exercise.
 
 
-For the Node server to be able to make database calls the MongoDB API must be queried against, this is done by using the \texttt{mongoose} package \cite{mongoose}.
+For the Node server to be able to make database calls the MongoDB API must be used. This is done via the \texttt{mongoose} package \cite{mongoose}.
 
 \subsection{REST API} \label{impl-rest}
 
-To provide an API that a frontend can interact with to retrieve information from the database, a REST API is created with the Express framework \cite{express}. Creating an API endpoint with Express is a simple process that roughly follows the formula of:
+To provide an API that a front-end can interact with to retrieve information from the database, a REST API is created with the Express framework \cite{express}. Creating an API endpoint with Express is a simple process that follows the formula of:
 
 \texttt{AppObject.RequestType("Endpoint", CallbackFunction)}
 
-Where \textit{AppObject} is the variable representing the instance of the server. \textit{RequestType} is usually one of GET or POST. \textit{Endpoint} is a string representing the local path the handles the request and \textit{CallbackFunction} is the function that handles the request and sends the response.
+Where \textit{AppObject} is the variable representing the instance of the server. \textit{RequestType} is usually one of GET or POST (HTTP verbs). \textit{Endpoint} is a string representing the local path the handles the request and \textit{CallbackFunction} is the function that handles the request and sends the response.
 
-The code \texttt{app.get("/profile", callback)} is the function that would handle GET requests to the \textbf{/profile} endpoint. 
+The code \texttt{app.get("/profile", callback)} is the function that handles GET requests to the \textbf{/profile} endpoint. 
 
-The only REST endpoints in the backend code are related to the exercises section of the system as those need to be stored in a global database. Most of the communication between the front and back is implemented through WebSocket connections.
+The only REST endpoints in the back-end code are related to the exercises section of the system as those need to be stored in a global database. Most of the communication between the front and back is implemented through WebSocket connections.
 
 \subsubsection{Get Exercise Endpoint}
 
 The \textbf{/exercise} endpoint is a GET request that returns the related exercise in the database that corresponds with the ID that is sent along in the query string.
 
-The callback function that deals with the request and sends a response is shown for this endpoint and it sends a response of 404 if it can't find the exercise based on the ID passed in the request and a 500 if there was an error with processing the request (such as if the database is down). Otherwise it will send a 200 and the exercise JSON object.
+The callback function that deals with the request and sends a response is shown for this endpoint and it sends a HTTP Status Code 404 if it can't find the exercise based on the ID passed in the request and a HTTP Status Code 500 if there was an error with processing the request (such as if the database is down). Otherwise it will send a HTTP Status Code 200 and the exercise JSON object.
 
 \begin{sexylisting}{/exercise endpoint}
 server.get("/exercise", (req: Request, res: Response) => {
@@ -60,7 +62,7 @@ server.get("/exercise", (req: Request, res: Response) => {
 
 The \textbf{/create} endpoint is a POST request used when a user makes a new exercise. Here the request object is broken down to get the parameters sent with the request and is turned into objects that can be inserted into the database.
 
-The response is the endpoint that the frontend can use to navigate to the page for the newly generated exercise.
+The response is the endpoint that the front-end can use to navigate to the page for the newly generated exercise.
 
 \begin{sexylisting}{/create endpoint}
 server.post("/create", (req, res) => {
@@ -76,11 +78,11 @@ server.post("/create", (req, res) => {
 
 \subsection{Docker Integration} \label{impl-docker}
 
-For the backend to have the ability to create and link Docker containers to a user running the application on the frontend it needs to be able to interact with the \textit{Docker Socket}. Every machine with an installation of the Docker Engine has a Docker Socket which is what the Docker CLI uses when commands are run against it.
+For the back-end to have the ability to create and link Docker containers to a user running the application on the front-end it needs to be able to interact with the \textit{Docker Socket}. Every machine with an installation of the Docker Engine has a Docker Socket which is what the Docker CLI uses when commands are run against it.
 
 There is a popular package on NPM called \textbf{Dockerode} \cite{dockerode} which enables interaction with the Docker API via whatever socket/path is provided in it's configuration.
 
-The following code snippet shows the instantiation of the Dockerode package using the local Docker socket and exports it for use in other files in the project's backend.
+The following code snippet shows the instantiation of the Dockerode package using the local Docker socket and exports it for use in other files in the project's back-end.
 
 \begin{sexylisting}{Create Docker instance and point it to local Socket}    
 import Docker = require("dockerode");
@@ -91,14 +93,14 @@ export default new Docker(options);
 
 \subsubsection{Provisioning a User Allocated Container} \label{impl-alloc}
 
-Creating a container for every user that connects to the system requires the concept of a \textit{basic image}. This image is a Dockerfile which specifies the defaults for all user's environments. The Dockerfile is responsible for configuring the environment so that it is secure and pre-installed with all the tools that the user might need.
+Creating a container for every user that connects to the system requires the concept of a \textit{basic image}. This image is created from a Dockerfile which specifies the defaults for all user's environments. The Dockerfile is responsible for configuring the environment so that it is secure and pre-installed with all the tools that the user might need.
 
-The basic image, comes with the following software pre-installed: \textbf{Alpine Linux Distro}, \textbf{Bash}, \textbf{Python3}, \textbf{Node.js}, \textbf{GCC} and \textbf{Git}.
+The basic image comes with the following software pre-installed: \textbf{Alpine Linux Distro}, \textbf{Bash}, \textbf{Python3}, \textbf{Node.js}, \textbf{GCC} and \textbf{Git}.
 
-Alpine Linux is the distribution that the base image of the container which is based on Ubuntu. Bash is a very common shell which is a better default than the standard \textit{ash} or \textit{sh} which are the shells that come with the Alpine image. Bash is important for the code execution aspect of the system which is explained further in \textit{Executing Code - \ref{imp-execode}}. Python, Node and GCC are chosen as those are the three runtimes that are supported by the system. Git is installed so if the user writes something that they want to be able to save they can use Git through the command line.
+Alpine Linux is the distribution that the base image of the container is based on. Bash is a very common shell which is a better default than the standard \textit{ash} or \textit{sh} shells which come with the Alpine image. Bash is important for the code execution aspect of the system which is explained further in \textit{Executing Code - \ref{imp-execode}}. Python, Node and GCC are chosen as those are the three runtimes that are supported by the system. Git is installed so if the user develops something that they want to be able to save they can access Git through the command line.
 
 % TODO: Ref the dockerfile in the appendix
-Some additional configuration that is done in this Dockerfile is the creation of the user account that users of the system will be operating as while they're connected to the container. By default the Docker engine sets the user of a container as root but this is obviously not appropriate for a system where anyone can play with a container so a low permission user is created called \textit{damien} who has their own home folder and ownership of that folder but everything under the root directory is protected.
+Some additional configuration that is done in the Dockerfile is the creation of the user account that users of the system will be operating as while they're connected to the container. By default the Docker engine sets the user of a container as root but this is not appropriate for a system where anyone can play with a container so a low permission user is created called \textit{damien} who has their own home folder and ownership of that folder but everything under the root directory is protected.
 
 The JavaScript to create the container for the user is a simple function call referencing the Docker API variable.
 
@@ -116,13 +118,13 @@ const container = await docker.createContainer({
 });
 \end{sexylisting}
 
-This tells the API to create a container using the image with the label "basic" which is what the Dockerfile described above has the label of. The various \texttt{AttachX} properties tell the container if they should allow other processes to attach to this containers Standard Input/Output/Error which, as this container is emulated on the front end is required to be \texttt{true}. Tty refers to an old way of referring to the interface for a terminal. Without this option set to true it won't display in a way that looks like a traditional command line environment. Cmd is the command that the container should run once it's been created, in this case it needs to run bash. OpenStdin allows standard input to the TTY. StdinOnce will close the STDIN connection if an attached user disconnects, this needs to be off for this system as going between an exercise and a container will detach in the way that satisfies this requirement and it needs to be able to reconnect to the STDIN. The name property is simply the labelled name of the container which is displayed to the user when they connect.
+This tells the API to create a container using the image with the label "basic" which is the label of the image created from the Dockerfile. The \texttt{AttachX} properties tell the container if they should allow other processes to attach to this containers Standard Input/Output/Error which, as this container is emulated on the front end, are required to be \texttt{true}. \texttt{Tty} refers to a way of referring to the interface for a terminal. Without this option set to true it won't display in a way that looks like a traditional command line environment. \texttt{Cmd} is the command that the container should run once it's been created, in this case it needs to run bash. \texttt{OpenStdin} allows standard input to the TTY. \texttt{StdinOnce} will close the STDIN connection if an attached user disconnects, this needs to be off for this system as going between an exercise and a container will detach in the way that satisfies this requirement and it needs to be able to reconnect to the STDIN. The \texttt{name} property is the labelled name of the container which is displayed to the user when they connect.
 
 \subsubsection{Provisioning an Exercise Container} \label{impl-exer-cont}
 
-Provisioning the exercise container is more or less the same as the user's allocated container but it has to pause the allocated container so that resources aren't being wasted and then create the container for the exercise.
+Provisioning the exercise container is similar as the user's allocated container but it has to pause the allocated container so that resources aren't being wasted and then create the container for the exercise.
 
-Exercise containers are created when a user enters an exercise and are destroyed when a user leaves the exercise. The are created the same way with the same configuration as the allocated containers however the image they are based from is the simplest REPL image that exists that relates to the runtime that the exercise is for.
+Exercise containers are created when a user enters an exercise and are destroyed when a user leaves the exercise. The are created the same way with the same configuration as the allocated containers however the image they are based on is the simplest REPL image that exists that relates to the runtime that the exercise is for.
 
 \subsubsection{Executing Code} \label{imp-execode}
 
@@ -144,9 +146,9 @@ export function getCodeSaveCommand(filename, code) {
 
 This snippet will add an escape character in front of all double quotes so that the double quotes don't finish the \texttt{bash -c} command and add command that saves the code to the specified file to the cmd array. This array is what the CMD option accepts. 
 
-After the file has been saved successfully a message is sent to the client confirming the save and the client sends an attach request for the code execution so that the STDIN and STDOUT can be attached to the terminal emulator.
+After the file has been saved successfully a message is sent to the client confirming the save and the client sends an attach request for the code execution so that STDIN and STDOUT can be attached to the terminal emulator.
 
-The execute command to run the code is more straight forward than the command to save it to a file.
+The execute command to run the code is more straightforward than the command to save it to a file.
 
 \begin{sexylisting}{Creating the code execution command for the container}
 export function getCodeExecutionCommand(filename, repl) {
@@ -164,11 +166,11 @@ export function getCodeExecutionCommand(filename, repl) {
 }
 \end{sexylisting}
 
-This snippet works along the same lines as the previous however more steps are involved for the C compilation step as an output file is generated which has to be executed.
+This snippet works similarly the same lines as the previous however more steps are involved for the C compilation step as an output file is generated which has to be executed.
 
-\subsection{WebSockets - Backend} \label{impl-ws-backend}
+\subsection{WebSockets - Back-end} \label{impl-ws-back-end}
 
-As mentioned in the Solution Approach (Section \ref{solapp-rtc}) the standard WebSocket client that is available as a browser API and on the backend a middleware package \texttt{express-ws} \cite{expressws} is being used to allow connections to the server using the WebSocket protocol.
+As mentioned in the Solution Approach (Section \ref{solapp-rtc}), the standard WebSocket client is available as a browser API and on the back-end a middleware package \texttt{express-ws} \cite{expressws} is being used to allow connections to the server using the WebSocket protocol.
 
 \subsubsection{Endpoint Configuration} \label{impl-ws-config}
 
@@ -197,13 +199,13 @@ WebSockets are only capable of sending strings of text in their messages however
     socket.send(JSON.stringify(message));
 \end{sexylisting}
 
-This snippet shows that an example message which is a JSON object with two properties \texttt{type}, which represents the type of the message being sent, and \texttt{data} which is an object itself which contains any relevant information that might be useful for the other end of the socket. In this case the type of the message is a flag to stop a running container and the data is the ID of the container. This is sent after being stringify-ed by the built in JSON object.
+This snippet shows an example message which is a JSON object with two properties \texttt{type}, which represents the type of the message being sent, and \texttt{data} which is an object itself which contains any relevant information that might be useful for the other end of the socket. In this case the type of the message is a flag to stop a running container and the data is the ID of the container. This is sent after being stringify-ed by the built in JSON object.
 
 \subsubsection{Message Types} \label{impl-ws-msg-type}
 
 As can be seen above each message has a type. These types are processed through a \texttt{switch statement} which inspects the type, extracts the parameters from the \texttt{data} property and makes a function call.
 
-\begin{sexylisting}{How the messages are processed by the backend}
+\begin{sexylisting}{How the messages are processed by the back-end}
     const { type, data } = JSON.parse(msg);
     switch (type) {
         case "Container.Pause":
@@ -219,11 +221,11 @@ As can be seen above each message has a type. These types are processed through 
         {...}
 \end{sexylisting}
 
-The first thing that is done when the message is received is, as the message is a string, it is parsed into JavaScript objects and the \texttt{type} and \texttt{data} properties are extracted. The \texttt{type} is switched against and based on what the value of it is. A string is logged to the console showing what action the server is performing and a function is called which will always pass the WebSocket object (so the server can reply) and then passes any relevant data that is required by that function. 
+The first thing done when the message is received is to parse it into JavaScript objects and the \texttt{type} and \texttt{data} properties are extracted. The \texttt{type} is switched against and based on what the value of it is. A string is logged to the console showing what action the server is performing and a function is called which will always pass the WebSocket object (so the server can reply) and then passes any relevant data that is required by that function. 
 
 \subsubsection{WebSocket Streams} \label{impl-ws-streams}
 
-Streams is a concept in programming which quite directly means a \textit{stream of data}. Streams are used most often to act on a huge amount of data in a more performance focused way. Streams of events are the types of streams that are used in this project however as the Docker containers are able to stream their STDIN and STDOUT. Using the Node.js Stream API it is possible to \texttt{pipe()} these streams over WebSockets.
+Streams is a concept in programming which directly means a \textit{stream of data}. Streams are used most often to act on a huge amount of data in a more performance focused way. Streams of events are the types of streams that are used in this project as the Docker containers are able to stream their STDIN and STDOUT. Using the Node.js Stream API it is possible to \texttt{pipe()} these streams over WebSockets.
 
 The package \texttt{websocket-stream} is used in the server to enable the streams to be piped over the WebSocket connection.
 
@@ -267,22 +269,22 @@ container.attach(
 );
 \end{sexylisting}
 
-The snippet above is showing the Docker API making a call to attach to the running container which was calculated based off the ID passed to the function. The options show that the \texttt{stream} option is set to true, the \texttt{stdin} option is dependent on if the stream is set to be bidirectional or not and the \texttt{logs} are also determined by the parameter passed from the query string.
+The snippet above is showing the Docker API making a call to attach to the running container that was calculated based on the ID passed to the function. The options show that the \texttt{stream} option is set to true, the \texttt{stdin} option is dependent on if the stream is set to be bidirectional or not and the \texttt{logs} are also determined by the parameter passed from the query string.
 
 The callback function does error handling and then will pipe the container stream to the WebSocket stream. If bidirectional flow is enabled, it will also pipe the WebSocket stream to the container. 
 
 
+\section{Front-end}
 
+The general approach for developing the front-end of the project is stated in Chapter \ref{solapp} in Section \ref{solapp-front-end} but a number of other packages were used to make the development of the solution smoother and less error prone. Namely, TypeScript \cite{typescript} was used rather than plain JavaScript and Styled Components \cite{styledcomp} was used in addition to regular CSS to make implementing the design more straightforward.
 
-\section{Frontend}
+The front-end consists of 4 pages or screens all of which have varying degrees of functionality and interaction with both the back-end and the user.
 
-The general approach for developing the frontend of the project is stated in Chapter \ref{solapp} in Section \ref{solapp-frontend} but a number of other packages were used to make the development of the solution smoother and less error prone. Namely, TypeScript \cite{typescript} was used rather than plain JavaScript and Styled Components \cite{styledcomp} was used in addition to regular CSS to make implementing the design more straightforward.
+A link to the front-end code can be found in Appendix C.
 
-The frontend consists of 4 pages or screens all of which have varying degrees of functionality and interaction with both the backend and the user.
+\subsection{WebSockets - Front-end} \label{impl-ws-front-end}
 
-\subsection{WebSockets - Frontend} \label{impl-ws-frontend}
-
-The WebSocket configuration is fairly similar to the backend. The browser has the WebSocket object in it's global scope so there is no need to import a package like had to be done for the backend.
+The WebSocket configuration is similar to the back-end. The browser has the WebSocket object in it's global scope so there is no need to import a package which had to be done for the back-end.
 
 All the configuration for setting up the WebSocket connection and handling events is done in the \texttt{componentDidMount()} lifecycle of the entire application.
 
@@ -319,13 +321,13 @@ As the structure of messages is predictable (see \ref{impl-ws-msg-struct}) the s
     {...}
 \end{sexylisting}
 
-Here the WebSocket is registering an \texttt{Event Listener} which performs the same basic \texttt{switch statement} that the backend is performing.
+Here the WebSocket is registering an \texttt{Event Listener} which performs the same \texttt{switch statement} that the back-end is performing.
 
 After a message comes through, depending on it's content it will modify the global state of the application so that all screens are able to inspect the current state of the socket and any response that might be relevant to the functionality of that particular page. This global state is created with the built in Context API from React.
 
 \subsubsection{Sending Messages} \label{impl-ws-fmsgsnd}
 
-Sending messages is performed the exact same way as it is from the backend, shown in Snippet \ref{code:ws-msg}
+Sending messages in the front-end is performed using a similar approach to the back-end, shown in Snippet \ref{code:ws-msg}
 
 \pagebreak
 
@@ -340,7 +342,7 @@ The home page of the web app has the goal of showing users all the functionality
     \label{fig:homepage}
 \end{figure}
 
-At the top of the page there is a standard navigation bar which provides access to the homepage (by clicking on the name of the website), the sandbox page and the exercises page. The connection status uses a traffic light style green, yellow and red system to show the connection status to the users container. Clicking on it reveals the name of the container if connected and if there's an issue it says there's a problem.
+At the top of the page there is a navigation bar which provides access to the homepage (by selecting the name of the website), the sandbox page and the exercises page. The connection status uses a traffic light style green, yellow and red system to show the connection status to the users container. Selecting it reveals the name of the container if connected and if there's an issue it will describe the problem.
 
 \begin{figure}[h!]
     \centering
@@ -349,7 +351,7 @@ At the top of the page there is a standard navigation bar which provides access 
     \label{fig:connection-popout}
 \end{figure}
 
-The home page also includes the Monaco code editor and a toggle for selecting a language so the whole functionality of the site can be sampled on this page. Picking any of the languages switches to the corresponding language and pressing \textit{Run} will execute the code and display the response in the pink output box below it which also displays the name of the container.
+The home page also includes the Monaco code editor and a toggle for selecting a language so the whole functionality of the site can be sampled on this page. Picking any of the languages switches to the corresponding language and pressing \textit{Run} will execute the code and display the response in the pink output box below which also displays the name of the container.
 
 \subsection{Sandbox Page} \label{impl-sandbox-page}
 
@@ -360,7 +362,7 @@ The home page also includes the Monaco code editor and a toggle for selecting a 
     \label{fig:sandboxpage}
 \end{figure}
 
-The sandbox page of the application has a simple file browser on the left which is created by passing the result of an \texttt{ls} Bash call on the container and sending the result to the client. In the middle is the Monaco code editor and on the right is the Xterm.js terminal emulator connected to the container's stream (see \ref{impl-ws-streams}). All three panes are resizeable.
+The sandbox page of the application has a file browser on the left which is created by passing the result of an \texttt{ls} Bash call on the container and sending the result to the client. In the middle is the Monaco code editor and on the right is the Xterm.js terminal emulator connected to the container's stream (see \ref{impl-ws-streams}). All three panes are resizable.
 
 The \texttt{Save} button will save the code to the container file that is currently open for it to be executed in the terminal emulator.
 
@@ -374,7 +376,7 @@ The \texttt{Save} button will save the code to the container file that is curren
     \label{fig:exercisespage}
 \end{figure}
 
-The exercises page has a selection of available exercises on the left that will open the corresponding exercise screen. It also contains a form which users can create their own exercise in order to share with others or help mentor someone new to coding. Up to 15 separate activities can be made for any exercise.
+The exercises page has a selection of available exercises on the left that will open the corresponding exercise screen. It also contains a form which users can use to create their own exercise in order to share with others or help mentor someone new to coding. Up to 15 separate activities can be made for any exercise.
 
 \subsection{Exercise Page} \label{impl-exercise-page}
 
@@ -387,7 +389,7 @@ The exercises page has a selection of available exercises on the left that will 
 
 The exercise page is what the user is greeted with when they interact with one of the exercises on the left of the exercises page. It displays the information for the user on the left of the specific activity they're on which is indicated by the counter in the bottom right. 
 
-This page is the most complicated of all of user facing side of the application. When the \texttt{Run} button is pressed, the best user experience is to display the result in the terminal emulator. However, this is already attached to the exercise container and having more than once connection is not a viable solution. When \texttt{Run} is pressed the message to save the code must first be sent, when that comes back as successful, it detaches the terminal from the container and makes a new request to the \texttt{/connect} endpoint of the server (see \ref{impl-ws-streams}) to create but this time instead of passing the ID of the user's container it passes the ID of the exercise container.
+This page is the most complicated of all user facing pages within the application. When the \texttt{Run} button is pressed, the best user experience is to display the result in the terminal emulator. However this is already attached to the exercise container and having more than one connection is not a viable solution. When \texttt{Run} is pressed the message to save the code must first be sent. When that returns as successful it detaches the terminal from the container and makes a new request to the \texttt{/connect} endpoint of the server (see \ref{impl-ws-streams}) to create but this time instead of passing the ID of the user's container it passes the ID of the exercise container.
 
 When this execution finishes, the connection is re-established with the normal REPL attached stream to provide a seamless experience between playing with the REPL and executing code.
 
@@ -395,13 +397,15 @@ The \textit{Connection Status} in the nav bar has changed to a yellow status, th
 
 \section{ContainMENT - Container Management} \label{impl-containment}
 
-Although containers are light weight and not very resource intensive, creating containers on demand as users make a connection with the site will lead a fairly significant scaling issue if there is no management of them in place.
+Although containers are light weight and not very resource intensive, creating containers on demand as users make a connection with the site will lead a fairly significant scaling issue if there is no container management in place.
 
 Currently there is only one ContainMENT tool in place which is \textbf{Ahab} (see \ref{impl-ahab}) but plans for additional tools are stated in Chapter \ref{conclusion}.
 
 \subsection{Ahab} \label{impl-ahab}
 
-Ahab is a Python script that is responsible for making sure that any containers that have been idle for too long or exited recently are removed after a reasonable length of time so that the resources allocated to those containers can be freed for other users. The script is designed to be run every five minutes automatically as a \textbf{Cron job}
+Ahab is a Python script that is responsible for making sure that any containers that have been idle for too long or exited recently are removed after a reasonable length of time so that the resources allocated to those containers can be freed for other users. The script is designed to be run every five minutes as a \textbf{Cron job}
+
+A link to the Ahab code can be found in Appendix C
 
 \begin{figure}[h!]
     \centering

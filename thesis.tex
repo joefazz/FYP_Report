@@ -13,6 +13,7 @@
 \usepackage[most]{tcolorbox}
 \usepackage{inconsolata}
 \usepackage{tabulary}
+\usepackage{pdfpages}
 
 \definecolor{mygreen}{rgb}{0,0.6,0}
 \definecolor{mymauve}{rgb}{0.58,0,0.82}
@@ -46,7 +47,8 @@
 \author{
     Joseph Fazzino\\
     24026478\\
-    [4cm]{Supervisor: Dr. Hong Wei}
+    [4cm]{Supervisor: Dr. Hong Wei}\\
+    Department of Computer Science
 }
 \date{29\textsuperscript{th} April 2019}
 
@@ -104,27 +106,27 @@ The results gained from the testing section are from preliminary tests for a sti
 
 \subsection{Write/Execute Code}
 
-This objective is the most important one for the system as it essentially is the binary pass fail for whether or not the aim of replacing a local environment has been achieved. Without the ability to perform these most basic of development actions, this entire project would be a failure. 
+This objective is the most important one for the system as it essentially is the binary pass fail for whether or not the aim of replacing a local environment has been achieved. Without the ability to perform these most basic of development actions, this entire project would be considered a failure. 
 
-As the usability test shows this objective has been fully met and even been exceeded as the ability to read code from a file is also possible with the system which was not within the scope of the initial PID or objectives.
+As the usability test shows this objective has been fully met and even been exceeded as the ability to read code from a file is also possible with the system which was not within the scope of the initial objectives.
 
 \subsection{Personal Environments}
 
 Being able to give users an environment that they can feel secure with knowing that no one else can tamper with it is an important part of a local development experience and therefore a must have feature of any sort of software attempting to provide that experience on a different platform.
 
-The usability tests show that the users environments are personal to their session and that these environments will consume as much of the system resource as the Docker Engine is allowed to give them \textit{(see \ref{test:perf-docker})}. The environments are entirely isolated from each other thanks to the container implementation selected and come preconfigured with common sense defaults like Node.js, Python3, GCC and Git. The option to add more languages is not only desirable but it is also easy, so long as a Docker image exists for it.
+The usability tests show that the users environments are personal to their session and that these environments will consume as much of the system resources as the Docker Engine is allowed to give them \textit{(see \ref{test:perf-docker})}. The environments are entirely isolated from each other thanks to the container implementation selected and come preconfigured common sense defaults like Node.js, Python3, GCC and Git. The option to add more languages is not only desirable but is also easy, as long as a Docker image exists for it.
 
 \subsection{Eliminate Local Tooling Requirement}
 
-The long term goal of this project is to entirely eliminate the need for tools to be installed locally on someone's computer. Almost all of the aims and implementation have been done to try and make this scenario a reality.
+The long term goal of this project is to entirely eliminate the need for tools to be installed locally on a user's computer. Almost all of the aims and implementation have been done to try and make this scenario a reality.
 
-By providing high quality tools in the project such as a world class text editor and a full terminal emulation the difference between using this application and locally running VSCode on a Linux machine is small enough for new developers that it is barely non existent. More experienced developers may miss the freedom of being able to install tooling at will however these developers are not the primary target audience.
+By providing high quality tools in the project such as a world class text editor and a full terminal emulation the difference between using this application and locally running VSCode on a Linux machine is small enough for new developers that it is arguably non existent. More experienced developers may miss the freedom of being able to install tooling however these developers are not the primary target audience.
 
 This objective is something that is always being strived to reach with a project like this and is too abstract and subjective to say if it's been achieved or not at this stage. Adding the ability to have a snapshot so a user can come back to work on something in the future would be the next big step towards meeting this objective.
 
 \subsection{Encourage Exploration}
 
-This objective is also fairly abstract. The aim is to give users an environment that, by eliminating the barriers of installation and configuration of tools, encourages playful behaviour in the knowledge that nothing can break permanently.
+This objective is also fairly abstract. The aim is to give users an environment that, by eliminating the barriers of installation and configuration of tools, encourages playful behaviour in the knowledge that nothing can be broken permanently.
 
 By providing users with an exercise section there is a way for those new to programming to be able to learn key concepts without having to leave the site. The ability to create an exercise which can be shared is another way that users can explore development. By creating an exercise from a concept they've just learnt or having a mentor send them an exercise.
 
@@ -134,18 +136,18 @@ This objective is as abstract and hard to assess as eliminating local tooling, p
 
 \subsection{Docker Containers}
 
-The results above show some interesting observations. As theorised in \ref{impl-ws-backend}, the main server which creates the containers and connects them never has very high CPU usage, any high CPU usage from Node.js is when there is typing in the terminal which is when the WebSocket Streams (see \ref{impl-ws-streams}) are connected. This shows that Node.js is a good technology to use when there isn't a heavy amount of processing needed to be done by the server such as this system where most of the work is being done by the Docker API. The memory usage isn't exactly high but is quite a bit higher than any other container, this could be due to the various components that make up Node.js such as the V8 engine and libuv.
+The results above show some interesting observations. As theorised in Section \ref{impl-ws-back-end}, the main server which creates the containers and connects them never has very high CPU usage. Any high CPU usage from Node.js is while there is terminal which is when the WebSocket Streams \textit{(see Section \ref{impl-ws-streams})} are connected. This shows that Node.js is a good technology to use when there isn't a heavy amount of processing needed to be done by the server such as this system where most of the work is being done by the Docker API. The memory usage isn't high but is quite a bit higher than any other container. This could be due to the various components that make up Node.js such as the V8 engine and libuv.
 
 The results also show that containers will behave like ordinary processes and take up as much available CPU as they possibly can in order to complete intensely computational tasks. If there are 10 concurrent users all attempting to perform computationally heavy tasks the CPU of the machine hosting the containers will be scheduled by the Completely Fair Scheduler which is the default scheduler in the Linux kernel \cite{cfs-article}.
 Containers will take up as much CPU as they can when they are doing intense computation.
 
-The containers don't tend to use a significant amount of memory although it depends on the kind of container and the operation running. Running the "Counting to 50 million" exercise on the homepage with JavaScript had a peak of only 2.55MiB but Python peaked at 8MiB. These results should not be taken as fully accurate metrics as the \texttt{docker stats} command only updates once every second. The containers never idled memory usage higher than 5.625MiB at any time.
+The containers do not tend to use a significant amount of memory although it depends on the kind of container and the operation running. Running the "Counting to 50 million" exercise on the homepage with JavaScript had a peak of only 2.55MiB but Python peaked at 8MiB. These results should not be taken as fully accurate metrics as the \texttt{docker stats} command only updates once every second. The containers never idled memory usage higher than 5.625MiB at any time.
 
-These results will be very helpful in the future for when the backend can be deployed in deciding what appropriate specifications the hosting machine should have for a well performing system.
+These results will be very helpful in the future when the back-end can be deployed in deciding what appropriate specifications the hosting machine should have for a well performing system.
 
 \subsection{Security}
 
-The testing performed showed that, while good preventive steps have been taken to try and create a secure environment. It is fairly difficult to make sure that a system, which inherently runs on the host machines metal, is able to be completely isolated from that host machine.
+The testing performed showed that, while good preventive steps have been taken to try and create a secure environment. It is fairly difficult to make sure that a system, which runs on the host machines metal, is able to be completely isolated from that host machine.
 
 A new tool from Google is proving effective at mitigating the risk of using containers as remote environments. gVisor \cite{gvisor} is compliant with the Open Container Initiative and works as a drop in runtime for the \texttt{runc} runtime that Docker uses by default and provides a small layer of security on top similar to how a traditional hypervisor provides security.
 
@@ -168,9 +170,9 @@ Shown in the article \cite{gvisor-info} simply replacing the \texttt{runc} runti
 
 % The report should include a section addressing the Social and Legal, Health and Safety and Ethical issues initially outlined in the project initiation document.
 
-There are some concerns with the project's output when it comes to the social, legal, health and ethical issues. Socially, the fact that it's an online environment means that someone with limited internet connection or even intermittent internet connection will struggle to use the site reliable and adequately replace a local development environment. This issue could be mitigated if the website was converted to a progressive web app which would enable offline functionality. The project is also limited socially to people who don't speak English as a first language as currently that's the only option, internationalisation support would resolve this issue.
+There are some concerns with the project's output when it comes to the social, legal, health and ethical issues. Socially, the fact that it's an online environment means that someone with limited internet connection or even intermittent internet connection will struggle to use the site reliably and adequately replace a local development environment. This issue could be mitigated if the website was converted to a progressive web app which would enable offline functionality. The project is also limited socially to people who don't speak English as a first language as currently that's the only option, internationalisation support would resolve this issue.
 
-There are some potential legal issues with the system created. As unfettered access to a system where a user has remote access to a virtual Linux environment. Despite the precautions spoken about in \textit{Security - \ref{test-sec}} it isn't feasible to expect that all security holes have been accounted for. A user agreement might be necessary to legally separate the system and developer from the actions of the user on it. This point is also an ethical issue, a significant effort must be made by the developer to make sure that there is adequate monitoring and preventive measures in place.
+There are some potential legal issues with the system created as unfettered access to a system where a user has remote access to a virtual Linux environment. Despite the precautions discussed in \textit{Security - \ref{test-sec}} it isn't feasible to expect that all security holes have been accounted for. A user agreement might be necessary to legally separate the system and developer from the actions of the user on it. This point is also an ethical issue. A significant effort must be made by the developer to make sure that there is adequate monitoring and preventive measures in place.
 
 A lot of the software used to implement this system is open source software meaning that the code is published in full online. The packages in use with this project are created under various open source licenses which all allow software to be used commercially \cite{opensource-licenses}.
 
@@ -184,11 +186,11 @@ A lot of the software used to implement this system is open source software mean
 
 % Briefly restate the project objectives and then make straightforward conclusions about your project work and results. What have been the key outcomes? You can suggest future work that logically stems from your work and refers to the limitations of your own work in the Discussion section. 
 
-This project has been an exercise in building a replacement developer environment that could be used by developers old and new in order to learn new skills or hone existing ones. It examined many different technologies that could be used to create the solution which fulfilled the requirements laid out in the Problem Statement \ref{chapter:probart}. It uses modern technologies such as WebSockets and containers to close the gap between an online experience and a local one as much as possible these technologies are all implemented in a way that focuses on the user's experience of using the system. In order to help bridge the gap it also successfully incorporates industry standard tooling with a familiar UI in a way that means users won't be challenged going from this system to a full integrated developer environment.
+This project has been an exercise in building a replacement developer environment that could be used by developers old and new in order to learn new skills or hone existing ones. It examined many different technologies that could be used to create the solution which fulfilled the requirements laid out in the \textit{Problem Statement - Chapter \ref{chapter:probart}}. It uses modern technologies such as WebSockets and containers to close the gap between an online experience and a local one as much as possible these technologies are all implemented in a way that focuses on the user's experience of using the system. In order to help bridge the gap it also successfully incorporates industry standard tooling with a familiar UI in a way that means users won't be challenged going from this system to a full integrated developer environment.
 
-The resulting system has achieved these base objectives that were set out and the results show that it has been achieved in way that performs well when measured against modern standards and practices. The output of the project has been thoroughly tested and inspected which will both help the project in it's current form and in future iterations in terms of calculating the correct amount of resources to provide a container with and additional security layers that can be added.
+The resulting system has achieved the base objectives that were set out and the results show that it has been achieved in a way that performs well when measured against modern standards and practices. The output of the project has been thoroughly tested and inspected which will both help the project in its current form and in future iterations in terms of calculating the correct amount of resources to provide a container with and additional security layers that can be added.
 
-There is a lot of space in the future of this project to grow it out into a full product. One of the first priorities for the future would be to implement the gVisor sandbox runtime for the additional security benefits it provides. Deploying the application on a permanent basis would also be a priority but further testing would be required so that the correct configuration for the host of the server could be calculated for the lowest cost. A final future feature for the system in general would be implementing container snapshots and user accounts so that it's possible to save the state of a user's allocated container and come back to it, this would mean that it is escalated to a proper environment that a user can make personal and use repeatedly. 
+There is a lot of space in the future of this project to grow it out into a full product. One of the first priorities for the future would be to implement the gVisor sandbox runtime for the additional security benefits it provides. Deploying the application on a permanent basis would also be a priority but further testing would be required so that the correct configuration for the host of the server can be calculated for the lowest cost. A final future feature for the system in general would be implementing container snapshots and user accounts so that it's possible to save the state of a user's allocated container and come back to it. This would mean that it is escalated to a proper environment that a user can make personal and use repeatedly. 
 
 \pagebreak
 
@@ -196,9 +198,9 @@ There is a lot of space in the future of this project to grow it out into a full
 
 If I were to do the project again I would've done more research before starting the coding section of my project as when the literature review was being performed some initial probing into code had begun without fully realising the required scope of the system which resulted in some rewrites of sections having to be done.
 
-Due to time constraints it became unrealistic to expect to implement some industry approved monitoring methods on the container especially for things like resource consumption and user activity. Now knowing what I know I think this is something I would've prioritised higher as it would've proved helpful for the testing section of the report and any observations made on the data would be more justifiable.
+Due to time constraints it became unrealistic to expect to implement some industry approved monitoring methods on the containers especially for things like resource consumption and user activity. Now knowing what I know I think this is something I would have prioritised higher as it would've proved helpful for the testing section of the report and any observations made on the data would be more justifiable.
 
-Overall it was a highly educational and rewarding experience to create the kind of software that I would've loved to exist when I was learning programming. Researching these technologies that I'd only heard of by name was an enlightening process as well which I doubt I would've been motivated to do myself had the need to write this report not been present.
+Overall it was a highly educational and rewarding experience to create the kind of software that I would've loved to exist when I was learning programming.
 
 % --------------------------------------------------
 % Bibliography & Appendices
@@ -208,7 +210,7 @@ Overall it was a highly educational and rewarding experience to create the kind 
 \pagebreak
 
 
-% \input{tex/appendices.tex}
+\input{tex/appendices.tex}
 
 
 \end{document}

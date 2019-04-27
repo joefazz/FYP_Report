@@ -98,7 +98,7 @@ These mean that there is greater user access over the state of containers and th
 
 \subsection{Docker}
 
-The Docker process is a daemon which can provide and manage Linux Containers as \textit{images}. It uses LXC for the container implementation and then adds on top an image management system which makes use of a \textit{Union File System}.
+The Docker process is a daemon which can provide and manage Linux Containers as \textit{images}. It uses LXC for the container implementation and then adds on top an image management system which makes use of a \textit{Union File System} \cite{contsvsvirt}.
 
 Using the daemon, Docker manages to provide similar functionality as the OpenVZ containers in relation to lifecycle and state. The state of a container at any time can be saved to a new image which can then be reloaded by the daemon to the same point
 
@@ -114,7 +114,7 @@ Repl.it is very similar to the idea proposed in the Problem Statement (Section \
 
 Repl.it takes advantage of containers in order to gives users a full developer experience when using the system \cite{replit-containers}. The system also uses its own container orchestration software in order to scale the instances available to users up and down based on current and predicted demand.
 
-Every code result is available to be viewed/run through a special .repl.run subdomain. This includes long running processes like web servers which are able to be hosted from these subdomains and be always accessible. This means you could create several repls which can all inter-connect to each other like a full system.
+Every code result is available to be viewed/run through a special \texttt{.repl.run} subdomain. This includes long running processes like web servers which are able to be hosted from these subdomains and be always accessible. This means you could create several REPLs which can all inter-connect to each other like a full system.
 
 Technically the system is impressive. Something that the system doesn't recreate quite as smoothly as a local environment is a small amount of latency between keys being pressed and the corresponding value appearing in the REPL itself.
 

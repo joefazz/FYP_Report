@@ -4,6 +4,8 @@
 \chapter{The Solution Approach} \label{solapp}
 % Here you should identify and evaluate the solution options against your problem statement / technical specification and make a reasoned choice of your chosen solution approach. Why did you do what you did? Conclude with a succinct definition of your solution approach and criteria by which the solution would be accepted as adequately verified. It is very likely that you will add further reference material in this section.
 
+In this chapter different solutions are analysed in the context of the projects objectives lain out in Chapter \ref{chapter:probart} and the Project Initiation Document \textit{(Appendix A)}. \textbf{Virtualisation} solutions are compared along with which \textbf{Container Provider} would be most appropriate for providing the isolated environment described in Section \ref{section:probart-techspec}. A decision was made on the solution for the \textbf{Real-Time Communication} aspect of the system as well as how the \textbf{Back-end} would facilitate this. Finally some \textbf{Front-end} requirements are compared to try and gauge the \textbf{Tools} that could be made available to users as well as the most appropriate tools for the developer to create the \textbf{Interface}. It concludes with analysis of some \textbf{Prototypes} and a declaration of the solution that was eventually chosen.
+
 \section{Solutions for Environment Virtualisation} \label{subapp-virt}
 In order to provide users with the most 'local' experience as possible on a remote platform it is key to analyse various technologies and techniques that are currently in widespread use in the industry. As discussed during Chapter \ref{lit} there is a consensus in the industry that containers are the ideal solution for PaaS type software of which this project would fall into the category of.
 
@@ -13,7 +15,7 @@ The decision to not research Virtual Machines as a potential solution for the sy
 
 \subsection{Container Providers} 
 
-The main container providers that can be applied to the project are Docker and OpenVZ as they both provide a good foundation on top of the base LXC technology. The ability to save containers at checkpoints is useful in relation to the project as any information created on the container can be saved and referred to later. While this feature is not in the proposed scope of the project it is important to consider feature development features and technology choices at an early stage can influence how easy or difficult implementing future features will be.
+The main container providers that can be applied to the project are Docker and OpenVZ as they both provide a good foundation on top of the base LXC technology. The ability to save containers at checkpoints is useful in relation to the project as any information created on the container could be saved and referred to later. While this feature is not in the proposed scope of the project it is important to consider feature development features and technology choices at an early stage can influence how easy or difficult implementing future features will be.
 
 A big limitation of OpenVZ is that it can't run on the standard Linux kernel so it is not a very viable solution for this project as the aim is to be able to easily deploy the system and requiring a modified kernel will add complexity.
 
@@ -30,6 +32,14 @@ By using WebSockets it will be possible to have incredibly low latency bidirecti
 WebSockets are available through the native Web APIs and so no 3rd party dependency is required to interact with them on the client side.
 
 On the server side there are a few ways to implement a WebSocket endpoint but as Node.js and Express are already being used for the REST api using a 3rd party dependency such as \texttt{express-ws} makes the most sense.
+
+\section{Solution for building the Back-end}
+
+With the options laid out in Section \ref{lit-back-end} and stated above in Section \ref{solapp-rtc}, evaluating which back-end technology to build out the infrastructure of the application with is made easier. 
+
+Using Node.js to build the server is the preferable option as the front-end of the application will be built in JavaScript anyway. Using one language across multiple code-bases means there is an opportunity for code reuse. Node.js being built from browser technologies means that it has good support for WebSockets and streams. Due to its popularity it also has a good level of support available at online resources and there is a popular Docker API package \cite{dockerode} which seems to be easy to use and suitable for the requirements of this project.
+
+Using .NET Core with C\# isn't a bad choice however considering the developer's familiarity with JavaScript and the project's time constraint it is better to avoid a new framework and language for fear of becoming stuck with new syntax and the MVC structure of programming.
 
 \section{Requirements for Front-end} \label{solapp-front-end}
 
@@ -178,8 +188,7 @@ No specific font styles were decided upon for this prototype.
 
 \section{Overall declaration of solution chosen}
 
-Based off of the research conducted in Chapter \ref{lit} and the potential woes of implementing some of the solutions proposed in this chapter, the current approach for creating a full implementation of the system is to have a Next.js front-end with a backend that uses Docker containers in order to implement virtual environments for users. The front-end will make use of the Monaco code editor and the Xterm terminal emulator. Communication between the containers and the front-end will be done with the WebSockets RTC method.
+Based off of the research conducted in Chapter \ref{lit} and the potential woes of implementing some of the solutions proposed in this chapter, the current approach for creating a full implementation of the system is to have a Next.js front-end with a Node.js backend that uses Docker containers in order to implement virtual environments for users. The front-end will make use of the Monaco code editor and the Xterm terminal emulator. Communication between the containers and the front-end will be done with the WebSockets RTC method.
 
-% TODO: talk about backend stuff here as well :(
 
 \pagebreak
